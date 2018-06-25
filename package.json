@@ -1,0 +1,22 @@
+{
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  },
+  "name": "notifications",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nearform/notifications.git"
+  },
+  "author": "Davide Fiorello <davide@codeflyer.com> (http://github.com/codeflyer/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nearform/notifications/issues"
+  },
+  "homepage": "https://github.com/nearform/notifications#readme",
+  "description": ""
+}
