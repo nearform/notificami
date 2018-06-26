@@ -45,6 +45,7 @@ async function checkDatabaseExists(pool, database) {
 async function resetTables(pool) {
   await pool.query(`DROP TABLE IF EXISTS schemaversion CASCADE`)
   await pool.query(`DROP TABLE IF EXISTS notification CASCADE`)
+  await pool.query(`DROP TABLE IF EXISTS sent_by CASCADE`)
 }
 
 async function runMigrations(conf) {
