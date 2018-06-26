@@ -122,7 +122,7 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
         LEFT JOIN
           sent_by s ON s.notification_id = n.id
         WHERE
-          n.id = ${id}
+          n.id = ${id} AND n.deleted_at IS null
         GROUP BY
           n.id
       `

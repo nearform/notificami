@@ -61,6 +61,20 @@ describe('Notification', () => {
       await expect(this.notificationsService.get(-1)).to.reject(Error, 'Cannot find notification with id -1')
     })
 
+    test('should throw an error when a deleted notification is requested', async () => {
+      const notification = {
+        notify: { user: 'davide', content: 'Some notification content' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      }
+      let result = await this.notificationsService.add(notification)
+      await this.notificationsService.setDeleted({ id: result.id })
+      await expect(this.notificationsService.get(result.id)).to.reject(
+        Error,
+        `Cannot find notification with id ${result.id}`
+      )
+    })
+
     test('should correctly return the notification without sent by', async () => {
       const notification = {
         notify: { user: 'davide', content: 'Some notification content' },
