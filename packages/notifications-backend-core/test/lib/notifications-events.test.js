@@ -30,7 +30,7 @@ describe('Notifications events', () => {
   })
 
   describe('adding', () => {
-    test('should correctly create a comment', async () => {
+    test('should correctly create a notification', async () => {
       let done
       const notification = {
         notify: { user: 'davide', content: 'Some notification content' },
