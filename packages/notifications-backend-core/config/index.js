@@ -21,6 +21,14 @@ const config = {
     user: NF_NOTIFICATIONS_PGUSER || 'postgres',
     username: NF_NOTIFICATIONS_PGUSER || 'postgres',
     database: NF_NOTIFICATIONS_PGDATABASE || (isTest ? 'notification_test' : 'notification')
+  },
+  notifications: {
+    strategies: {
+      default: {
+        name: 'list-with-fallback',
+        channels: ['socket', 'webpush', 'email']
+      }
+    }
   }
 }
 
