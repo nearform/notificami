@@ -76,6 +76,47 @@ describe('Notifications - register sender to channel', () => {
     expect(notifications.config.channels.email.providers[0].send).to.be.a.function()
   })
 
+  test('registering a sender (object or function) into a channel should build the notif.me sdk configuration', () => {
+    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    notifications.register('email', 'smtp', { key: 1234, from: 'me@examepl.com' })
+    notifications.register('email', 'somthing-elser-smtp', { type: 'smtp', key: 'abcd', from: 'me@examepl.com' })
+    notifications.register('email', 'my-sender-2', async notification => {})
+    notifications.register('sms', 'my-third-sender', async notification => {})
+
+    expect(notifications.config).to.part.include({
+      channels: {
+        email: {
+          multiProviderStrategy: 'fallback',
+          providers: [
+            {
+              type: 'smtp',
+              key: 1234,
+              from: 'me@examepl.com'
+            },
+            {
+              type: 'smtp',
+              key: 'abcd',
+              from: 'me@examepl.com'
+            },
+            {
+              type: 'custom',
+              id: 'my-sender-2'
+            }
+          ]
+        },
+        sms: {
+          multiProviderStrategy: 'fallback',
+          providers: [
+            {
+              type: 'custom',
+              id: 'my-third-sender'
+            }
+          ]
+        }
+      }
+    })
+  })
+
   test('registering a sender should enable sending of notification', async () => {
     const notifications = notificationsBuilder(fakeDb, config.notifications)
     const notification = { id: 'my-notification' }
@@ -120,6 +161,3 @@ describe('Notifications - register sender to channel', () => {
     })
   })
 })
-
-// register all the configuration in one place
-// on the first call instantiare the notifme sdk with the configuration and keep using it

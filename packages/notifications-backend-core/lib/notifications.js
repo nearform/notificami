@@ -2,6 +2,7 @@
 
 const NotifmeSdk = require('notifme-sdk').default // This import create a __core-js_shared__ leak in lab
 const { cloneDeep } = require('lodash')
+const { cloneDeep, isFunction } = require('lodash')
 const EventEmitter = require('events')
 const SQL = require('@nearform/sql')
 const notifmeSdkDefaultConfig = {
@@ -69,11 +70,17 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
         notifmeSdkConfig.channels[channel].providers = []
       }
 
-      notifmeSdkConfig.channels[channel].providers.push({
-        type: 'custom',
-        id: name,
-        send: handler
-      })
+      if (isFunction(handler)) {
+        notifmeSdkConfig.channels[channel].providers.push({
+          type: 'custom',
+          id: name,
+          send: handler
+        })
+
+        return
+      }
+
+      notifmeSdkConfig.channels[channel].providers.push(Object.assign({}, { type: name }, handler))
     }
 
     async send(notification) {
@@ -155,12 +162,12 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
 
     async setRead({ id }) {
       const sql = SQL`
-        UPDATE 
+        UPDATE
           notification
         SET
           read_at = NOW()
         WHERE
-          id = ${id}   
+          id = ${id}
         RETURNING *
       `
       const res = await db.query(sql)
@@ -175,12 +182,12 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
 
     async delete({ id }) {
       const sql = SQL`
-        UPDATE 
+        UPDATE
           notification
         SET
           deleted_at = NOW()
         WHERE
-          id = ${id}   
+          id = ${id}
         RETURNING *
       `
       const res = await db.query(sql)
