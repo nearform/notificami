@@ -6,12 +6,11 @@ module.exports.lab = Lab.script()
 const { describe, it: test } = module.exports.lab
 
 const fakeDb = {}
-const config = require('../../config')
 const notificationsBuilder = require('../../lib/notifications')
 
 describe('Notifications - register sender to channel', () => {
   test('calling register without paramer should throw an error', () => {
-    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    const notifications = notificationsBuilder(fakeDb)
 
     try {
       notifications.register()
@@ -22,7 +21,7 @@ describe('Notifications - register sender to channel', () => {
   })
 
   test('registering a sender into a channel should builg the notif.me sdk configuration', () => {
-    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    const notifications = notificationsBuilder(fakeDb)
     expect(notifications.config).equal({
       channels: {}
     })
@@ -77,7 +76,7 @@ describe('Notifications - register sender to channel', () => {
   })
 
   test('registering a sender (object or function) into a channel should build the notif.me sdk configuration', () => {
-    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    const notifications = notificationsBuilder(fakeDb)
     notifications.register('email', 'smtp', { key: 1234, from: 'me@examepl.com' })
     notifications.register('email', 'somthing-elser-smtp', { type: 'smtp', key: 'abcd', from: 'me@examepl.com' })
     notifications.register('email', 'my-sender-2', async notification => {})
@@ -118,7 +117,7 @@ describe('Notifications - register sender to channel', () => {
   })
 
   test('registering a sender should enable sending of notification', async () => {
-    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    const notifications = notificationsBuilder(fakeDb)
     const notification = { id: 'my-notification' }
 
     notifications.register('email', 'my-email-sender', async notification => {
@@ -137,8 +136,23 @@ describe('Notifications - register sender to channel', () => {
     })
   })
 
+  test('calling send with a non existing strategy will return an error', async () => {
+    const notifications = notificationsBuilder(fakeDb)
+    const notification = { id: 'my-notification' }
+
+    notifications.register('email', 'my-email-sender', async notification => {
+      return 'id-email-sent'
+    })
+
+    const result = await notifications.send(notification, 'no-strategy')
+    expect(result).equal({
+      status: 'error',
+      message: 'Cannot send notification with a non existing strategy (no-strategy)'
+    })
+  })
+
   test('the first sender in the strategy configsender will be used', async () => {
-    const notifications = notificationsBuilder(fakeDb, config.notifications)
+    const notifications = notificationsBuilder(fakeDb)
     const notification = { id: 'my-notification' }
 
     notifications.register('socket', 'my-socket-sender', async notification => {

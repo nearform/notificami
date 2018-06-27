@@ -115,7 +115,7 @@ describe('Notification', () => {
         deletedAt: null
       }
 
-      let result = await this.notificationsService.sendBy({ id: notificationResult.id, channel: 'email' })
+      let result = await this.notificationsService.sentBy({ id: notificationResult.id, channel: 'email' })
       result = await this.notificationsService.get(result.id)
 
       expect(result.id).to.be.number()
@@ -202,7 +202,7 @@ describe('Notification', () => {
     })
   })
 
-  describe('sendBy', () => {
+  describe('sentBy', () => {
     test('should correctly set the notification to deleted', async () => {
       const notification = {
         notify: { user: 'davide', content: 'Some notification content' },
@@ -212,7 +212,7 @@ describe('Notification', () => {
 
       let notificationResult = await this.notificationsService.add(notification)
 
-      let result = await this.notificationsService.sendBy({ id: notificationResult.id, channel: 'email' })
+      let result = await this.notificationsService.sentBy({ id: notificationResult.id, channel: 'email' })
 
       expect(result.notificationId).to.be.equal(notificationResult.id)
       expect(result.channel).to.be.equal('email')

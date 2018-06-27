@@ -4,11 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "npm run pg:test:init && NODE_ENV=test lab -c --coverage-exclude config test -I __core-js_shared__",
+    "start": "node index.js",
+    "pg:test:init": "NODE_ENV=test node ../notifications-backend-core/database/init.js && NODE_ENV=test node ../notifications-backend-core/database/migrate.js max",
+    "pg:init": "node ../notifications-backend-core/database/init.js && node ../notifications-backend-core/database/migrate.js max"
   },
   "contributors": [
     "Filippo De Santis (https://github.com/p16)",
     "Davide Fiorello (https://github.com/codeflyer)"
   ],
   "author": "nearForm Ltd",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "hapi": "^17.5.2",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "code": "^5.2.0",
+    "lab": "^15.5.0"
+  }
 }
