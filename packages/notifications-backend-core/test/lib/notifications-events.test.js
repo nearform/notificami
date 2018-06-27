@@ -107,7 +107,7 @@ describe('Notifications events', () => {
       })
 
       const result = await this.notificationsService.add(notification)
-      await this.notificationsService.setDeleted({ id: result.id })
+      await this.notificationsService.delete({ id: result.id })
       await p
     })
   })

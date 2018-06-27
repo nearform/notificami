@@ -1,6 +1,6 @@
 'use strict'
 
-const NotifmeSdk = require('notifme-sdk').default
+const NotifmeSdk = require('notifme-sdk').default // This import create a __core-js_shared__ leak in lab
 const { cloneDeep } = require('lodash')
 const EventEmitter = require('events')
 const SQL = require('@nearform/sql')
@@ -113,6 +113,26 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
       return notification
     }
 
+    async getByUserIdentifier(userIdentifier) {
+      const sql = SQL`
+        SELECT
+          n.*, json_agg(s) as sent_by
+        FROM
+          notification n
+        LEFT JOIN
+          sent_by s ON s.notification_id = n.id
+        WHERE
+          n.user_identifier = ${userIdentifier} AND n.deleted_at IS null
+        GROUP BY
+          n.id
+        ORDER BY
+          n.created_at ASC
+      `
+
+      const res = await db.query(sql)
+      return res.rows.map(row => this.mapNotificationFromDb(row))
+    }
+
     async get(id) {
       const sql = SQL`
         SELECT
@@ -153,7 +173,7 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
       return notification
     }
 
-    async setDeleted({ id }) {
+    async delete({ id }) {
       const sql = SQL`
         UPDATE 
           notification
