@@ -16,11 +16,11 @@
   "author": "nearForm Ltd",
   "license": "Apache-2.0",
   "dependencies": {
+    "joi": "^13.4.0",
     "notifications-backend-core": "^0.0.1"
   },
   "devDependencies": {
     "code": "^5.2.0",
-    "faker": "^4.1.0",
     "hapi": "^17.5.2",
     "lab": "^15.4.5"
   }
