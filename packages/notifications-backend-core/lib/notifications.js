@@ -1,19 +1,21 @@
 'use strict'
 
 const NotifmeSdk = require('notifme-sdk').default // This import create a __core-js_shared__ leak in lab
-const { cloneDeep } = require('lodash')
+const { cloneDeep, isFunction } = require('lodash')
 const EventEmitter = require('events')
 const SQL = require('@nearform/sql')
+const defaultConfig = require('../config')
+
 const notifmeSdkDefaultConfig = {
   channels: {}
 }
 
-module.exports = function buildNotificationsService(db, config, strategy = 'default') {
-  const notifmeSdkConfig = cloneDeep(notifmeSdkDefaultConfig)
-
-  if (!config.strategies[strategy]) {
-    throw new Error(`Cannot initialize the notification service with a non existing strategy (${strategy})`)
+module.exports = function buildCommentsService(db, config = {}) {
+  if (!config || !config.strategies) {
+    config.strategies = defaultConfig.notifications.strategies
   }
+
+  const notifmeSdkConfig = cloneDeep(notifmeSdkDefaultConfig)
 
   class NotificationsService extends EventEmitter {
     mapNotificationFromDb(raw) {
@@ -69,14 +71,27 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
         notifmeSdkConfig.channels[channel].providers = []
       }
 
-      notifmeSdkConfig.channels[channel].providers.push({
-        type: 'custom',
-        id: name,
-        send: handler
-      })
+      if (isFunction(handler)) {
+        notifmeSdkConfig.channels[channel].providers.push({
+          type: 'custom',
+          id: name,
+          send: handler
+        })
+
+        return
+      }
+
+      notifmeSdkConfig.channels[channel].providers.push(Object.assign({}, { type: name }, handler))
     }
 
-    async send(notification) {
+    async send(notification, strategy = 'default') {
+      if (!config.strategies || !config.strategies[strategy]) {
+        return {
+          status: 'error',
+          message: `Cannot send notification with a non existing strategy (${strategy})`
+        }
+      }
+
       if (!this.notifmeSdk) {
         this.notifmeSdk = new NotifmeSdk(notifmeSdkConfig)
       }
@@ -155,12 +170,12 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
 
     async setRead({ id }) {
       const sql = SQL`
-        UPDATE 
+        UPDATE
           notification
         SET
           read_at = NOW()
         WHERE
-          id = ${id}   
+          id = ${id}
         RETURNING *
       `
       const res = await db.query(sql)
@@ -175,12 +190,12 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
 
     async delete({ id }) {
       const sql = SQL`
-        UPDATE 
+        UPDATE
           notification
         SET
           deleted_at = NOW()
         WHERE
-          id = ${id}   
+          id = ${id}
         RETURNING *
       `
       const res = await db.query(sql)
@@ -193,7 +208,7 @@ module.exports = function buildNotificationsService(db, config, strategy = 'defa
       return notification
     }
 
-    async sendBy({ id, channel }) {
+    async sentBy({ id, channel }) {
       const sql = SQL`
          INSERT INTO
             sent_by (notification_id, channel)

@@ -112,8 +112,8 @@ describe('Notifications events', () => {
     })
   })
 
-  describe('sendBy', () => {
-    test('should correctly set the notification to deleted', async () => {
+  describe('sentBy', () => {
+    test('should correctly set the notification to be sent by the right channel', async () => {
       let done
       const notification = {
         notify: { user: 'davide', content: 'Some notification content' },
@@ -134,7 +134,7 @@ describe('Notifications events', () => {
       })
 
       const notificationResult = await this.notificationsService.add(notification)
-      await this.notificationsService.sendBy({ id: notificationResult.id, channel: 'email' })
+      await this.notificationsService.sentBy({ id: notificationResult.id, channel: 'email' })
       await p
     })
   })
