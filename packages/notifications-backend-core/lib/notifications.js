@@ -10,7 +10,7 @@ const notifmeSdkDefaultConfig = {
   channels: {}
 }
 
-module.exports = function buildCommentsService(db, config = {}) {
+module.exports = function buildNotificationService(db, config = {}) {
   if (!config || !config.strategies) {
     config.strategies = defaultConfig.notifications.strategies
   }

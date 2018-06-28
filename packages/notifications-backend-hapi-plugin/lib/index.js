@@ -1,7 +1,9 @@
 'use strict'
 
 const Joi = require('joi')
+const Nes = require('nes')
 const { buildNotificationsService, buildPool, config } = require('notifications-backend-core')
+const { notifyUser } = require('./subscriptions')
 
 const schema = Joi.object({
   pg: Joi.object().optional(),
@@ -22,6 +24,21 @@ const notificationsHapiPlugin = {
 
     server.decorate('server', 'notificationsService', notificationsService)
     server.decorate('request', 'notificationsService', notificationsService)
+
+    if (options.nes) {
+      await server.register([
+        {
+          plugin: Nes,
+          options: options.nes
+        }
+      ])
+
+      server.decorate('server', 'notifyViaWebsocket', notification => {
+        return server.methods.notifyUser(notification)
+      })
+      server.subscription('/users/{user*}')
+      server.method('notifyUser', notifyUser.bind(server))
+    }
 
     await server.register({ plugin: require('./routes'), options: options.routes })
 

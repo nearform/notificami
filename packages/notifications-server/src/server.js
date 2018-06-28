@@ -16,7 +16,10 @@ function registerChannelsAndProviders(notifications, config) {
 
 async function buildServer(defaultConfig) {
   const server = Hapi.server(defaultConfig.server)
-  server.register({ plugin: require('../../notifications-backend-hapi-plugin/lib/index') })
+  server.register({
+    plugin: require('../../notifications-backend-hapi-plugin/lib/index'),
+    options: defaultConfig.pluginOptions
+  })
 
   let config
   if (process.env.NF_NOTIFICATION_CONFIG_BUILDER_PATH) {
