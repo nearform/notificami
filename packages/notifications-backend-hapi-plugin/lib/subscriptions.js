@@ -11,10 +11,14 @@ async function notifyUser(notification) {
 
   let isUserSubscribed = false
   server.eachSocket(
-    () => {
-      isUserSubscribed = true
-    },
-    { subscription: `/users/${notification.userIdentifier}` }
+    socket => {
+      if (!isUserSubscribed) {
+        isUserSubscribed = !!socket._subscriptions[`/users/${notification.userIdentifier}`]
+      }
+    }
+    // @see https://github.com/hapijs/nes/issues/248
+    // ,
+    // { subscription: `/users/${notification.userIdentifier}` }
   )
 
   if (!isUserSubscribed) {

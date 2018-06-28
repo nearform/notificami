@@ -84,11 +84,22 @@ module.exports = function buildNotificationService(db, config = {}) {
       notifmeSdkConfig.channels[channel].providers.push(Object.assign({}, { type: name }, handler))
     }
 
-    async send(notification, strategy = 'default') {
+    async send(notification, strategy) {
+      if (!strategy) {
+        strategy = 'default'
+      }
+
       if (!config.strategies || !config.strategies[strategy]) {
         return {
           status: 'error',
           message: `Cannot send notification with a non existing strategy (${strategy})`
+        }
+      }
+
+      if (!config.strategies[strategy].channels) {
+        return {
+          status: 'error',
+          message: `No channel specified for strategy (${strategy})`
         }
       }
 

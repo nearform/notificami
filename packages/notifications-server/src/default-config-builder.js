@@ -6,9 +6,8 @@ async function defaultConfigBuilder(server) {
       socket: {
         mysocketservice: async notification => {
           const result = await server.notifyViaWebsocket(notification)
-          if (result.success === true) {
-            server.notificationsService.sentBy({ id: notification.id, channel: 'socket' })
-          }
+
+          return result
         }
       }
     },
