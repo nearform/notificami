@@ -4,6 +4,7 @@ const Joi = require('joi')
 const Nes = require('nes')
 const { buildNotificationsService, buildPool, config } = require('notifications-backend-core')
 const { notifyUser } = require('./subscriptions')
+const { TestQueue } = require('./test-queue')
 
 const schema = Joi.object({
   pg: Joi.object().optional(),
@@ -38,6 +39,28 @@ const notificationsHapiPlugin = {
       })
       server.subscription('/users/{user*}')
       server.method('notifyUser', notifyUser.bind(server))
+
+      const queue = new TestQueue()
+      queue.consume('notification-queue', async notification => {
+        let result
+        try {
+          result = await notificationsService.send(notification, notification.sendStrategy)
+        } catch (e) {
+          server.log(['error', 'notification', 'send'], e)
+        }
+
+        if (result.status === 'success' && Object.keys(result.channels).length > 0) {
+          const tasks = Object.keys(result.channels).map(channel =>
+            notificationsService.sentBy({ id: notification.id, channel })
+          )
+
+          await Promise.all(tasks)
+        }
+      })
+
+      notificationsService.on('add', async notification => {
+        await queue.sendToQueue('notification-queue', notification)
+      })
     }
 
     await server.register({ plugin: require('./routes'), options: options.routes })

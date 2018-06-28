@@ -1,7 +1,7 @@
 'use strict'
 
 const Hapi = require('hapi')
-const { defaultConfigBuilder } = require('../default-config-builder')
+const { defaultConfigBuilder } = require('./default-config-builder')
 
 function registerChannelsAndProviders(notifications, config) {
   if (!config.channels) throw new Error('No channels provided in config')
@@ -16,7 +16,8 @@ function registerChannelsAndProviders(notifications, config) {
 
 async function buildServer(defaultConfig) {
   const server = Hapi.server(defaultConfig.server)
-  server.register({
+
+  await server.register({
     plugin: require('../../notifications-backend-hapi-plugin/lib/index'),
     options: defaultConfig.pluginOptions
   })

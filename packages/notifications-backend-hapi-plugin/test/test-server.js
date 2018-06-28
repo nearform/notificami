@@ -45,7 +45,9 @@ module.exports = async function buildServer(config = {}, options = {}) {
     if (!config.pluginOptions) {
       config.pluginOptions = {
         strategies: {
-          default: {}
+          default: {
+            channels: ['websocket']
+          }
         }
       }
     }
