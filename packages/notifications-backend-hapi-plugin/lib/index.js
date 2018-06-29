@@ -27,19 +27,29 @@ const notificationsHapiPlugin = {
     server.decorate('request', 'notificationsService', notificationsService)
 
     if (options.channels) {
-      Object.entries(options.channels).map(async ([key, value]) => {
+      const channels = Object.keys(options.channels)
+      for (let index = 0; index < channels.length; index++) {
+        const value = options.channels[channels[index]]
+        try {
+          await server.register(require(value.plugin), value.options || {})
+        } catch (e) {
+          server.log(['error', 'initialize-channel', value.plugin], e)
+        }
+      }
+    }
+
+    if (options.plugins) {
+      for (let index = 0; index < options.plugins.length; index++) {
+        const value = options.plugins[index]
         try {
           await server.register(require(value.plugin), value.options || {})
         } catch (e) {
           server.log(['error', 'initialize-plugin', value.plugin], e)
         }
-      })
+      }
     }
 
-    await server.register([
-      { plugin: require('notifications-backend-test-queue') },
-      { plugin: require('./routes'), options: options.routes }
-    ])
+    await server.register([{ plugin: require('./routes'), options: options.routes }])
 
     server.ext('onPostStop', async () => {
       await notificationsService.close()

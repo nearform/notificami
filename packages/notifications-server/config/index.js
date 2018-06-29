@@ -9,6 +9,7 @@ const config = {
         plugin: 'notifications-channel-websocket-nes'
       }
     },
+    plugins: [{ plugin: 'notifications-backend-test-queue' }],
     strategies: {
       default: {
         name: 'default-to-sockets',

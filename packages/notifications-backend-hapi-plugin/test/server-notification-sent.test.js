@@ -17,6 +17,7 @@ describe('Notifications REST API', () => {
       host: '127.0.0.1',
       port: 8281,
       pluginOptions: {
+        plugins: [{ plugin: 'notifications-backend-test-queue' }],
         strategies: {
           default: {
             name: 'default-to-sockets',
