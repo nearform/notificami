@@ -18,7 +18,8 @@
   "dependencies": {
     "joi": "^13.4.0",
     "nes": "^9.0.0",
-    "notifications-backend-core": "^0.0.1"
+    "notifications-backend-core": "^0.0.1",
+    "notifications-backend-test-queue": "^0.0.1"
   },
   "devDependencies": {
     "code": "^5.2.0",

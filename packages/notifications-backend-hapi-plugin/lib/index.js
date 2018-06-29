@@ -3,8 +3,6 @@
 const Joi = require('joi')
 const { buildNotificationsService, buildPool, config } = require('notifications-backend-core')
 
-const { TestQueue } = require('./test-queue')
-
 const schema = Joi.object({
   pg: Joi.object().optional(),
   strategies: Joi.object().optional()
@@ -38,20 +36,10 @@ const notificationsHapiPlugin = {
       })
     }
 
-    const queue = new TestQueue()
-    queue.consume('notification-queue', async notification => {
-      try {
-        await notificationsService.send(notification, notification.sendStrategy)
-      } catch (e) {
-        server.log(['error', 'notification', 'send'], e)
-      }
-    })
-
-    notificationsService.on('add', async notification => {
-      await queue.sendToQueue('notification-queue', notification)
-    })
-
-    await server.register({ plugin: require('./routes'), options: options.routes })
+    await server.register([
+      { plugin: require('notifications-backend-test-queue') },
+      { plugin: require('./routes'), options: options.routes }
+    ])
 
     server.ext('onPostStop', async () => {
       await notificationsService.close()
