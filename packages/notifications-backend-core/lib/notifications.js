@@ -114,11 +114,11 @@ module.exports = function buildNotificationService(db, config = {}) {
 
         result = await this.notifmeSdk.send({ [channel]: notification })
         if (result && result.status === 'success' && Object.keys(result.channels).length > 0) {
-          const tasks = Object.keys(result.channels).map(channel => {
-            this.sentBy({ id: notification.id, channel })
-          })
+          const channels = Object.keys(result.channels)
+          for (const chan of channels) {
+            await this.sentBy({ id: notification.id, channel: chan })
+          }
 
-          await Promise.all(tasks)
           break
         }
       }
