@@ -5,7 +5,7 @@ const Hapi = require('hapi')
 async function buildServer(defaultConfig) {
   const server = Hapi.server(defaultConfig.server)
   await server.register({
-    plugin: require('../../notifications-backend-hapi-plugin/lib/index'),
+    plugin: require('notifications-backend-hapi-plugin'),
     options: defaultConfig.notifications
   })
 
