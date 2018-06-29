@@ -21,7 +21,19 @@ describe('Notification Websocket - routes', () => {
       {
         host: '127.0.0.1',
         port: 8281,
-        pluginOptions: { nes: {} }
+        pluginOptions: {
+          channels: {
+            socket: {
+              plugin: 'notifications-channel-websocket-nes'
+            }
+          },
+          strategies: {
+            default: {
+              name: 'default-to-sockets',
+              channels: ['socket', 'test']
+            }
+          }
+        }
       },
       { mockTestService }
     )
@@ -75,6 +87,7 @@ describe('Notification Websocket - routes', () => {
         userIdentifier: 'davide'
       }
       const addedNotification = await server.notificationsService.add(notification)
+      server.notificationsService.notifmeSdk.logger.mute()
       await server.notificationsService.send(addedNotification)
 
       expect(mockTestService.called).to.be.true()

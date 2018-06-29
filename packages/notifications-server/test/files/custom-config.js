@@ -1,32 +1,28 @@
 'use strict'
 
-async function buildConfig(server) {
-  return {
-    channels: {
-      email: {
-        ses: {
-          region: 'xxxxx',
-          accessKeyId: 'xxxxx',
-          secretAccessKey: 'xxxxx'
-        },
-        sendgrid: {
-          apiKey: 'xxxxx'
-        }
+module.exports = {
+  channels: {
+    email: {
+      ses: {
+        region: 'xxxxx',
+        accessKeyId: 'xxxxx',
+        secretAccessKey: 'xxxxx'
       },
-      sms: {
-        twilio: {
-          accountSid: 'xxxxx',
-          authToken: 'xxxxx'
-        }
+      sendgrid: {
+        apiKey: 'xxxxx'
       }
     },
-    strategies: {
-      default: {
-        name: 'another',
-        channels: ['email', 'sms']
+    sms: {
+      twilio: {
+        accountSid: 'xxxxx',
+        authToken: 'xxxxx'
       }
+    }
+  },
+  strategies: {
+    default: {
+      name: 'another',
+      channels: ['email', 'sms']
     }
   }
 }
-
-module.exports = buildConfig

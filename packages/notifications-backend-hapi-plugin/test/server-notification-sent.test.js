@@ -16,7 +16,14 @@ describe('Notifications REST API', () => {
     server = await buildServer({
       host: '127.0.0.1',
       port: 8281,
-      pluginOptions: { nes: {} }
+      pluginOptions: {
+        strategies: {
+          default: {
+            name: 'default-to-sockets',
+            channels: ['test']
+          }
+        }
+      }
     })
   })
 
