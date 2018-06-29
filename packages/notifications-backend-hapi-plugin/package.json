@@ -17,8 +17,9 @@
   "license": "Apache-2.0",
   "dependencies": {
     "joi": "^13.4.0",
+    "nes": "^9.0.0",
     "notifications-backend-core": "^0.0.1",
-    "nes": "^9.0.0"
+    "notifications-channel-websocket-nes": "^0.0.1"
   },
   "devDependencies": {
     "code": "^5.2.0",

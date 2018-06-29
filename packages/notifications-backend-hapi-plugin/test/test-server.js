@@ -1,37 +1,5 @@
 'use strict'
 
-function registerChannelsAndProviders(notifications, config) {
-  if (!config.channels) throw new Error('No channels provided in config')
-
-  Object.keys(config.channels).forEach(channel => {
-    Object.keys(config.channels[channel]).forEach(provider => {
-      const handler = config.channels[channel][provider]
-      notifications.register(channel, provider, handler)
-    })
-  })
-}
-
-async function defaultConfigBuilder(server, mockTestService) {
-  return {
-    channels: {
-      socket: {
-        mysocketservice: async notification => {
-          return server.notifyViaWebsocket(notification)
-        }
-      },
-      test: {
-        testService: mockTestService
-      }
-    },
-    strategies: {
-      default: {
-        name: 'default-to-sockets',
-        channels: ['socket', 'test']
-      }
-    }
-  }
-}
-
 module.exports = async function buildServer(config = {}, options = {}) {
   // If forked as child, send output message via ipc to parent, otherwise output to console
   const logMessage = process.send ? process.send : console.log // eslint-disable-line no-console
@@ -46,31 +14,21 @@ module.exports = async function buildServer(config = {}, options = {}) {
       config.pluginOptions = {
         strategies: {
           default: {
-            channels: ['websocket']
+            name: 'default-to-sockets',
+            channels: ['test']
           }
         }
       }
     }
-
-    if (!config.pluginOptions.resolvers) {
-      config.pluginOptions.resolvers = {
-        resolveUrl: () => 'http://localhost/'
-      }
-    }
-
-    let channelConfig
-    if (config.buildConfig) {
-      channelConfig = await config.buildConfig(server)
-    } else {
-      channelConfig = await defaultConfigBuilder(server, options.mockTestService || (() => {}))
-    }
-
     await server.register({
       plugin: require('../lib/index'),
-      options: Object.assign({}, config.pluginOptions, { strategies: channelConfig.strategies })
+      options: Object.assign({}, config.pluginOptions, {
+        strategies: config.pluginOptions.strategies,
+        channels: config.pluginOptions.channels
+      })
     })
 
-    registerChannelsAndProviders(server.notificationsService, channelConfig)
+    server.notificationsService.register('test', 'test-service', options.mockTestService || (() => {}))
 
     return server
   } catch (err) {

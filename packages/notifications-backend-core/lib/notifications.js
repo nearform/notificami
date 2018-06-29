@@ -61,6 +61,7 @@ module.exports = function buildNotificationService(db, config = {}) {
         throw new Error('Channel, name and handler parameters are mandatory')
       }
 
+      this.notifmeSdk = null
       if (!notifmeSdkConfig.channels[channel]) {
         notifmeSdkConfig.channels[channel] = {}
       }

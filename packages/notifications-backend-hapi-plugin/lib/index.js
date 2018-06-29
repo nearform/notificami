@@ -1,9 +1,8 @@
 'use strict'
 
 const Joi = require('joi')
-const Nes = require('nes')
 const { buildNotificationsService, buildPool, config } = require('notifications-backend-core')
-const { notifyUser } = require('./subscriptions')
+
 const { TestQueue } = require('./test-queue')
 
 const schema = Joi.object({
@@ -26,42 +25,38 @@ const notificationsHapiPlugin = {
     server.decorate('server', 'notificationsService', notificationsService)
     server.decorate('request', 'notificationsService', notificationsService)
 
-    if (options.nes) {
-      await server.register([
-        {
-          plugin: Nes,
-          options: options.nes
-        }
-      ])
-
-      server.decorate('server', 'notifyViaWebsocket', notification => {
-        return server.methods.notifyUser(notification)
-      })
-      server.subscription('/users/{user*}')
-      server.method('notifyUser', notifyUser.bind(server))
-
-      const queue = new TestQueue()
-      queue.consume('notification-queue', async notification => {
-        let result
+    if (options.channels) {
+      Object.entries(options.channels).map(async ([key, value]) => {
         try {
-          result = await notificationsService.send(notification, notification.sendStrategy)
+          await server.register(require(value.plugin), value.options || {})
         } catch (e) {
-          server.log(['error', 'notification', 'send'], e)
+          console.log('Error on channel registration: ', key)
+          console.log(e)
         }
-
-        if (result.status === 'success' && Object.keys(result.channels).length > 0) {
-          const tasks = Object.keys(result.channels).map(channel =>
-            notificationsService.sentBy({ id: notification.id, channel })
-          )
-
-          await Promise.all(tasks)
-        }
-      })
-
-      notificationsService.on('add', async notification => {
-        await queue.sendToQueue('notification-queue', notification)
       })
     }
+
+    const queue = new TestQueue()
+    queue.consume('notification-queue', async notification => {
+      let result
+      try {
+        result = await notificationsService.send(notification, notification.sendStrategy)
+      } catch (e) {
+        server.log(['error', 'notification', 'send'], e)
+      }
+
+      if (result.status === 'success' && Object.keys(result.channels).length > 0) {
+        const tasks = Object.keys(result.channels).map(channel =>
+          notificationsService.sentBy({ id: notification.id, channel })
+        )
+
+        await Promise.all(tasks)
+      }
+    })
+
+    notificationsService.on('add', async notification => {
+      await queue.sendToQueue('notification-queue', notification)
+    })
 
     await server.register({ plugin: require('./routes'), options: options.routes })
 
