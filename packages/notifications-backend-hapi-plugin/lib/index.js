@@ -43,14 +43,6 @@ const notificationsHapiPlugin = {
       } catch (e) {
         server.log(['error', 'notification', 'send'], e)
       }
-
-      if (result && result.status === 'success' && Object.keys(result.channels).length > 0) {
-        const tasks = Object.keys(result.channels).map(channel =>
-          notificationsService.sentBy({ id: notification.id, channel })
-        )
-
-        await Promise.all(tasks)
-      }
     })
 
     notificationsService.on('add', async notification => {
