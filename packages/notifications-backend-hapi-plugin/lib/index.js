@@ -19,7 +19,10 @@ const notificationsHapiPlugin = {
       throw result.error
     }
 
-    const db = buildPool(Object.assign({}, config.pg, options.pg))
+    let db = options.db
+    if (!db) {
+      db = buildPool(Object.assign({}, config.pg, options.pg))
+    }
     const notificationsService = buildNotificationsService(db, { strategies: options.strategies })
 
     server.decorate('server', 'notificationsService', notificationsService)
@@ -37,9 +40,8 @@ const notificationsHapiPlugin = {
 
     const queue = new TestQueue()
     queue.consume('notification-queue', async notification => {
-      let result
       try {
-        result = await notificationsService.send(notification, notification.sendStrategy)
+        await notificationsService.send(notification, notification.sendStrategy)
       } catch (e) {
         server.log(['error', 'notification', 'send'], e)
       }

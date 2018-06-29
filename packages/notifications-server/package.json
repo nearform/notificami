@@ -18,7 +18,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "hapi": "^17.5.2",
-    "notifications-channel-websocket-nes": "^0.0.1"
+    "notifications-channel-websocket-nes": "^0.0.1",
+    "notifications-backend-hapi-plugin": "^0.0.1"
   },
   "devDependencies": {
     "code": "^5.2.0",
