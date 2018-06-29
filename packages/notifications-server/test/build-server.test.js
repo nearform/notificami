@@ -1,6 +1,5 @@
 'use strict'
 
-const path = require('path')
 const { expect } = require('code')
 const Lab = require('lab')
 module.exports.lab = Lab.script()

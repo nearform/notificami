@@ -30,8 +30,7 @@ const notificationsHapiPlugin = {
         try {
           await server.register(require(value.plugin), value.options || {})
         } catch (e) {
-          console.log('Error on channel registration: ', key)
-          console.log(e)
+          server.log(['error', 'initialize-plugin', value.plugin], e)
         }
       })
     }
