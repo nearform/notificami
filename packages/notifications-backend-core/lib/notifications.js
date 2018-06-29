@@ -113,7 +113,12 @@ module.exports = function buildNotificationService(db, config = {}) {
         if (!notifmeSdkConfig.channels[channel]) continue
 
         result = await this.notifmeSdk.send({ [channel]: notification })
-        if (result.status === 'success') {
+        if (result && result.status === 'success' && Object.keys(result.channels).length > 0) {
+          const channels = Object.keys(result.channels)
+          for (const chan of channels) {
+            await this.sentBy({ id: notification.id, channel: chan })
+          }
+
           break
         }
       }

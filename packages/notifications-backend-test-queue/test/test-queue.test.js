@@ -5,7 +5,7 @@ const Lab = require('lab')
 module.exports.lab = Lab.script()
 const { describe, it: test } = module.exports.lab
 
-const { TestQueue } = require('../lib/test-queue')
+const { TestQueue } = require('../src/test-queue')
 
 describe('Test queue', () => {
   test('sendToQueue: it should return null if no queue has been registered', async () => {

@@ -5,7 +5,14 @@ const Lab = require('lab')
 module.exports.lab = Lab.script()
 const { describe, it: test } = module.exports.lab
 
-const fakeDb = {}
+const fakeDb = {
+  query: () => {
+    return {
+      rowCount: 0,
+      rows: []
+    }
+  }
+}
 const notificationsBuilder = require('../../lib/notifications')
 
 describe('Notifications - register sender to channel', () => {
