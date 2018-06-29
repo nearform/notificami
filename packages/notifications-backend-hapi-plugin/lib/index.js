@@ -30,10 +30,21 @@ const notificationsHapiPlugin = {
       const channels = Object.keys(options.channels)
       for (let index = 0; index < channels.length; index++) {
         const value = options.channels[channels[index]]
-        try {
-          await server.register(require(value.plugin), value.options || {})
-        } catch (e) {
-          server.log(['error', 'initialize-channel', value.plugin], e)
+
+        if (value.plugin) {
+          try {
+            await server.register(require(value.plugin), value.options || {})
+          } catch (e) {
+            server.log(['error', 'initialize-channel', value.plugin], e)
+          }
+
+          return
+        }
+
+        const channel = channels[index]
+        const providerNames = Object.keys(value)
+        for (let index = 0; index < providerNames.length; index++) {
+          await server.notificationsService.register(channel, providerNames[index], value[providerNames[index]])
         }
       }
     }

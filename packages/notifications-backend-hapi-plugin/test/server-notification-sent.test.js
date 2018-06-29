@@ -18,6 +18,18 @@ describe('Notifications REST API', () => {
       port: 8281,
       pluginOptions: {
         plugins: [{ plugin: 'notifications-backend-test-queue' }],
+        channels: {
+          email: {
+            ses: {
+              region: 'xxxxx',
+              accessKeyId: 'xxxxx',
+              secretAccessKey: 'xxxxx'
+            },
+            sendgrid: {
+              apiKey: 'xxxxx'
+            }
+          }
+        },
         strategies: {
           default: {
             name: 'default-to-sockets',
