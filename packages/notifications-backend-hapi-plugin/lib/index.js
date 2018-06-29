@@ -49,7 +49,7 @@ const notificationsHapiPlugin = {
           server.log(['error', 'notification', 'send'], e)
         }
 
-        if (result.status === 'success' && Object.keys(result.channels).length > 0) {
+        if (result && result.status === 'success' && Object.keys(result.channels).length > 0) {
           const tasks = Object.keys(result.channels).map(channel =>
             notificationsService.sentBy({ id: notification.id, channel })
           )
