@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const { buildNotificationsService, buildPool, config } = require('notifications-backend-core')
+const { buildNotificationsService, buildPool, config, PostgresStorage } = require('notifications-backend-core')
 
 const schema = Joi.object({
   pg: Joi.object().optional(),
@@ -17,11 +17,23 @@ const notificationsHapiPlugin = {
       throw result.error
     }
 
+    if (options.storage && options.storage.plugin) {
+      try {
+        await server.register(require(options.storage.plugin), options.storage.options || {})
+      } catch (e) {
+        server.log(['error', 'initialize-storage', options.storage.plugin], e)
+      }
+    }
+
     let db = options.db
     if (!db) {
       db = buildPool(Object.assign({}, config.pg, options.pg))
     }
-    const notificationsService = buildNotificationsService(db, { strategies: options.strategies })
+
+    const notificationsService = buildNotificationsService(
+      server.storageService ? server.storageService : new PostgresStorage(db),
+      { strategies: options.strategies }
+    )
 
     server.decorate('server', 'notificationsService', notificationsService)
     server.decorate('request', 'notificationsService', notificationsService)

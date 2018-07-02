@@ -8,14 +8,14 @@ const { describe, it: test, before, after, afterEach } = module.exports.lab
 const { resetDb } = require('../utils')
 const config = require('../../config')
 
-const { buildPool, buildNotificationsService } = require('../../lib')
+const { buildPool, buildNotificationsService, PostgresStorage } = require('../../lib')
 
 describe('Notifications events', () => {
   before(async () => {
     await resetDb()
 
     const db = buildPool(config.pg)
-    this.notificationsService = buildNotificationsService(db, config.notifications)
+    this.notificationsService = buildNotificationsService(new PostgresStorage(db), config.notifications)
   })
 
   after(() => {
