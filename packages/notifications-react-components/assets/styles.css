@@ -1,0 +1,43 @@
+.notifications-box {
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  width: 30px;
+  height: 20px;
+  background-color: lightgrey;
+  border: 1px solid darkgray;
+  color: grey;
+  cursor: pointer;
+}
+
+.notifications-list {
+  box-sizing: border-box;
+  font-family: sans-serif;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  border: 1px solid lightgrey;
+  background-color: #ebebeb;
+  color: #424242;
+  padding: 0;
+}
+
+.notifications-list h3{
+  margin: 0;
+  padding: 2px;
+  padding-bottom: 5px;
+  background-color: lightgrey;
+}
+
+.notifications-list p{
+  padding: 2px;
+}
+
+.notifications-list .notifications-list-item {
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid lightgrey;
+  padding: 5px;
+}

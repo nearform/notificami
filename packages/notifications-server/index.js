@@ -17,5 +17,5 @@ buildServer(defaultConfig)
     return server.start()
   })
   .then(server => {
-    console.log('Server started...') // eslint-disable-line no-console
+    console.log(`Server started on port ${defaultConfig.server.port}...`) // eslint-disable-line no-console
   })
