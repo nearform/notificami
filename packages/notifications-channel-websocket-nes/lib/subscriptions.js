@@ -21,6 +21,7 @@ async function notifyUser(notification) {
     // { subscription: `/users/${notification.userIdentifier}` }
   )
 
+  // This is needed beacuse notif.me sdk requires a rejected promise to mark a provider as unsuccessful.
   if (!isUserSubscribed) {
     throw new Error('User not subscribed')
   }
