@@ -49,14 +49,12 @@ const notificationsHapiPlugin = {
           } catch (e) {
             server.log(['error', 'initialize-channel', value.plugin], e)
           }
-
-          return
-        }
-
-        const channel = channels[index]
-        const providerNames = Object.keys(value)
-        for (let index = 0; index < providerNames.length; index++) {
-          await server.notificationsService.register(channel, providerNames[index], value[providerNames[index]])
+        } else {
+          const channel = channels[index]
+          const providerNames = Object.keys(value)
+          for (let index = 0; index < providerNames.length; index++) {
+            await server.notificationsService.register(channel, providerNames[index], value[providerNames[index]])
+          }
         }
       }
     }
