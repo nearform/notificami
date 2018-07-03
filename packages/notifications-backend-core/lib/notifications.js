@@ -10,7 +10,7 @@ const notifmeSdkDefaultConfig = {
 }
 
 module.exports = function buildNotificationService(storage, config = {}) {
-  if (!config || !config.strategies) {
+  if (!config.strategies) {
     config.strategies = defaultConfig.notifications.strategies
   }
 
@@ -51,7 +51,7 @@ module.exports = function buildNotificationService(storage, config = {}) {
         strategy = 'default'
       }
 
-      if (!config.strategies || !config.strategies[strategy]) {
+      if (!config.strategies[strategy]) {
         return {
           status: 'error',
           message: `Cannot send notification with a non existing strategy (${strategy})`
