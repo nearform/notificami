@@ -23,7 +23,7 @@ docker-compose up postgres
 npm test
 ```
 
-## Thigns to know
+## Things to know
 
 - we do have a problem with the `eachSocket` function https://github.com/hapijs/nes/issues/248 . As of now, we have a fix (filtering the sockets by [ourselves](https://github.com/nearform/notifications/blob/master/packages/notifications-channel-websocket-nes/lib/subscriptions.js#L12-L22)).
 
