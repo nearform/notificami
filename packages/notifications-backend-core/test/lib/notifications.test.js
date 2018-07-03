@@ -8,12 +8,12 @@ const { describe, it: test, beforeEach, before, after } = module.exports.lab
 const { resetDb } = require('../utils')
 const config = require('../../config')
 
-const { buildPool, buildNotificationsService } = require('../../lib')
+const { buildPool, buildNotificationsService, PostgresStorage } = require('../../lib')
 
 describe('Notification', () => {
   before(async () => {
     const db = buildPool(config.pg)
-    this.notificationsService = buildNotificationsService(db, config.notifications)
+    this.notificationsService = buildNotificationsService(new PostgresStorage(db), config.notifications)
   })
 
   beforeEach(async () => {
@@ -22,16 +22,6 @@ describe('Notification', () => {
 
   after(() => {
     return this.notificationsService.close()
-  })
-
-  describe('mappers', () => {
-    test('mapNotificationFromDb should return null with null parameters', () => {
-      expect(this.notificationsService.mapNotificationFromDb()).to.be.null()
-    })
-
-    test('mapSentByFromDb should return null with null parameters', () => {
-      expect(this.notificationsService.mapSentByFromDb()).to.be.null()
-    })
   })
 
   describe('adding', () => {
