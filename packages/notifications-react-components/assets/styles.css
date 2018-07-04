@@ -23,6 +23,27 @@
   padding: 0;
 }
 
+.notifications-list .items{
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.notifications-list .has-more, .notifications-list .loading{
+  font-size: 12px;
+  box-sizing: border-box;
+  margin: 3px 10px;
+  border: 1px solid lightgrey;
+  display: flex;
+  justify-content: center;
+  width: 230px;
+}
+
+.notifications-list .has-more:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+
 .notifications-list h3{
   margin: 0;
   padding: 2px;

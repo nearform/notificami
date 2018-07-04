@@ -14,12 +14,13 @@ function PropsChildren(props) {
   return <span>test</span>
 }
 
-const mockWebSocketService = ({ subscriptionError = false } = {}) => {
+const mockWebSocketService = ({ subscriptionError = false, getNotifications = async () => {} } = {}) => {
   let called = 0
   let user
   let callback
 
   return {
+    getNotifications,
     onUserNotification: async (u, c) => {
       called++
 
@@ -65,17 +66,41 @@ describe('NotificationsProvider', () => {
       wrapper.unmount()
     })
 
+    test('On subscription the notification list is initialized', async () => {
+      await delay()
+
+      service.getCallback()({
+        type: 'init',
+        payload: { items: [{ id: 1, notify: { content: 'some content' } }], hasMore: true }
+      })
+      expect(wrapper.state().notifications).toEqual([{ id: 1, notify: { content: 'some content' } }])
+      expect(wrapper.state().active).toEqual(true)
+      expect(wrapper.state().hasMore).toEqual(true)
+
+      wrapper.unmount()
+    })
+
+    test('If the notification type is unknow nothing happen', async () => {
+      await delay()
+
+      service.getCallback()({
+        type: 'another',
+        payload: {}
+      })
+      wrapper.unmount()
+    })
+
     test('When a new communication comes from the socket, the callback is called and the status updated', async () => {
       await delay()
 
-      service.getCallback()({ id: 'hello' })
+      service.getCallback()({ type: 'new', payload: { id: 'hello' } })
       expect(wrapper.state().notifications).toEqual([{ id: 'hello' }])
       expect(wrapper.state().active).toEqual(true)
 
       wrapper.setProps({ userIdentifier: 'test2' })
       await delay()
 
-      service.getCallback()({ id: 'hello2' })
+      service.getCallback()({ type: 'new', payload: { id: 'hello2' } })
       expect(wrapper.state().notifications).toEqual([{ id: 'hello2' }])
       expect(wrapper.state().active).toEqual(true)
 
@@ -107,7 +132,7 @@ describe('NotificationsProvider', () => {
     test('a notification can be removed', async () => {
       await delay()
 
-      service.getCallback()({ id: 1, notify: { content: 'hello' } })
+      service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello' } } })
       expect(wrapper.state().notifications).toEqual([{ id: 1, notify: { content: 'hello' } }])
       expect(wrapper.state().active).toEqual(true)
 
@@ -123,7 +148,7 @@ describe('NotificationsProvider', () => {
     test('a notification will not be removed if not present', async () => {
       await delay()
 
-      service.getCallback()({ id: 1, notify: { content: 'hello' } })
+      service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello' } } })
 
       wrapper.state().removeNotificationFromList({ id: 2, notify: { content: 'hello 2' } })
       await delay()
@@ -195,6 +220,57 @@ describe('NotificationsProvider', () => {
       wrapper.instance().toggleList()
       wrapper.instance().closeList()
       expect(wrapper.state().showList).toEqual(false)
+    })
+
+    test('loadMore', async () => {
+      const getNotificationsMock = jest.fn()
+      service = mockWebSocketService({ getNotifications: getNotificationsMock })
+
+      wrapper = mount(
+        <NotificationsProvider userIdentifier="test" service={service}>
+          <div />
+        </NotificationsProvider>
+      )
+
+      getNotificationsMock.mockReturnValueOnce({
+        items: [{ id: 2, notify: { content: 'some content' } }],
+        hasMore: true
+      })
+      getNotificationsMock.mockReturnValueOnce({
+        items: [{ id: 1, notify: { content: 'some content' } }],
+        hasMore: true
+      })
+      getNotificationsMock.mockReturnValueOnce({
+        items: [],
+        hasMore: true
+      })
+      getNotificationsMock.mockRejectedValueOnce({ message: 'some error' })
+
+      await wrapper.instance().loadMore()
+      expect(wrapper.state().notifications).toEqual([{ id: 2, notify: { content: 'some content' } }])
+      expect(wrapper.state().hasMore).toBeTruthy()
+
+      await wrapper.instance().loadMore()
+      expect(wrapper.state().notifications).toEqual([
+        { id: 2, notify: { content: 'some content' } },
+        { id: 1, notify: { content: 'some content' } }
+      ])
+      expect(wrapper.state().hasMore).toBeTruthy()
+
+      await wrapper.instance().loadMore()
+      expect(wrapper.state().notifications).toEqual([
+        { id: 2, notify: { content: 'some content' } },
+        { id: 1, notify: { content: 'some content' } }
+      ])
+      expect(wrapper.state().hasMore).toBeFalsy()
+
+      await wrapper.instance().loadMore()
+      expect(wrapper.state().notifications).toEqual([
+        { id: 2, notify: { content: 'some content' } },
+        { id: 1, notify: { content: 'some content' } }
+      ])
+      expect(wrapper.state().hasMore).toBeFalsy()
+      expect(wrapper.state().loadMoreError).toBe('some error')
     })
   })
 })

@@ -1,4 +1,5 @@
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import React from 'react'
 
 import { WebsocketService, buildWebsocketClient } from '../src/nesClient'
@@ -42,6 +43,30 @@ storiesOf('Notifications', module)
   .add('Default user Davide', () => <Notifications user="davide">Start from here</Notifications>)
   .add('Default user Filippo', () => <Notifications user="filippo">Start from here</Notifications>)
   .add('NotificationsList not active', () => <NotificationsList />)
+  .add('NotificationsList with items and has more', () => (
+    <NotificationsList
+      active
+      notifications={[
+        { id: 10, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' },
+        { id: 11, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' },
+        { id: 12, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' }
+      ]}
+      hasMore
+      loadMore={action('Load more')}
+    />
+  ))
+  .add('NotificationsList with items and has more and is loading', () => (
+    <NotificationsList
+      active
+      notifications={[
+        { id: 10, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' },
+        { id: 11, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' },
+        { id: 12, notify: { content: 'Add a commet here' }, createdAt: '2018-07-02T09:18:04.555Z' }
+      ]}
+      hasMore
+      isLoadingMore
+    />
+  ))
   .add('NotificationsList with items', () => (
     <NotificationsList
       active
