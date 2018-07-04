@@ -25,7 +25,7 @@ describe('Notifications REST API', () => {
     return server.stop()
   })
 
-  describe.only('GET /users/{userIdentifier}/notifications', () => {
+  describe('GET /users/{userIdentifier}/notifications', () => {
     beforeEach(async () => {
       for (let { notify, sendStrategy, userIdentifier } of notificationsMockData) {
         await server.notificationsService.add({

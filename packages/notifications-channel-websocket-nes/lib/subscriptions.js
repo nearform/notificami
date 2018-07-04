@@ -27,7 +27,7 @@ async function notifyUser(notification) {
   }
 
   // TODO Find a way to check if the message is delivered, an ACK message from the client can be a solution
-  await server.publish(`/users/${notification.userIdentifier}`, notifyToSend)
+  await server.publish(`/users/${notification.userIdentifier}`, { type: 'new', payload: notifyToSend })
 }
 
 module.exports = {
