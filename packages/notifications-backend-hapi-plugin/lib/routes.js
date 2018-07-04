@@ -5,7 +5,7 @@ const Joi = require('joi')
 module.exports = {
   name: 'notifications',
   register(server, options = {}) {
-    options.cors = options.cors || false
+    const { cors = false, auth = false } = options
 
     server.route({
       method: 'GET',
@@ -15,8 +15,8 @@ module.exports = {
         return request.notificationsService.getByUserIdentifier(username)
       },
       options: {
-        cors: options.cors,
-        auth: options.auth || false,
+        cors,
+        auth,
         validate: {
           params: {
             username: Joi.string().required()
@@ -32,8 +32,8 @@ module.exports = {
         return request.notificationsService.add(request.payload)
       },
       options: {
-        cors: options.cors,
-        auth: options.auth || false,
+        cors,
+        auth,
         validate: {
           payload: {
             notify: Joi.object().required(),
@@ -54,8 +54,8 @@ module.exports = {
         return { success: true }
       },
       options: {
-        cors: options.cors,
-        auth: options.auth || false,
+        cors,
+        auth,
         validate: {
           params: {
             id: Joi.number().required()

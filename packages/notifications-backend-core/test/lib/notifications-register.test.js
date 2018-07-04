@@ -25,6 +25,18 @@ describe('Notifications - register sender to channel', () => {
     } catch (e) {
       expect(e.message).equal('Channel, name and handler parameters are mandatory')
     }
+    try {
+      notifications.register('Channel')
+      fail('I should have chatched an error...')
+    } catch (e) {
+      expect(e.message).equal('Channel, name and handler parameters are mandatory')
+    }
+    try {
+      notifications.register('Channel', 'name')
+      fail('I should have chatched an error...')
+    } catch (e) {
+      expect(e.message).equal('Channel, name and handler parameters are mandatory')
+    }
   })
 
   test('registering a sender into a channel should builg the notif.me sdk configuration', () => {
@@ -155,6 +167,27 @@ describe('Notifications - register sender to channel', () => {
     expect(result).equal({
       status: 'error',
       message: 'Cannot send notification with a non existing strategy (no-strategy)'
+    })
+  })
+
+  test('calling a strategy without channels with will return an error', async () => {
+    const notifications = notificationsBuilder(fakeDbStorage, {
+      strategies: {
+        default: {
+          name: 'list-with-fallback'
+        }
+      }
+    })
+    const notification = { id: 'my-notification' }
+
+    notifications.register('email', 'my-email-sender', async notification => {
+      return 'id-email-sent'
+    })
+
+    const result = await notifications.send(notification)
+    expect(result).equal({
+      status: 'error',
+      message: `No channel specified for strategy (default)`
     })
   })
 
