@@ -8,6 +8,7 @@ const { describe, it: test, before, beforeEach, after } = module.exports.lab
 
 const { resetDb } = require('../../notifications-backend-core/test/utils')
 const buildServer = require('./test-server')
+const notificationsMockData = require('./__mockData__/notifications')
 
 describe('Notifications REST API', () => {
   let server = null
@@ -24,37 +25,63 @@ describe('Notifications REST API', () => {
     return server.stop()
   })
 
-  describe('GET /users/{userIdentifier}/notifications', () => {
-    test('it should get the list related to the user', async () => {
-      await server.notificationsService.add({
-        notify: { content: 'Some notification content for Davide' },
-        sendStrategy: 'default',
-        userIdentifier: 'davide'
-      })
+  describe.only('GET /users/{userIdentifier}/notifications', () => {
+    beforeEach(async () => {
+      for (let { notify, sendStrategy, userIdentifier } of notificationsMockData) {
+        await server.notificationsService.add({
+          notify,
+          sendStrategy,
+          userIdentifier
+        })
+      }
+    })
 
-      await server.notificationsService.add({
-        notify: { content: 'a notification for Filippo' },
-        sendStrategy: 'default',
-        userIdentifier: 'filippo'
-      })
-
-      await server.notificationsService.add({
-        notify: { content: 'another notification for Davide' },
-        sendStrategy: 'default',
-        userIdentifier: 'davide'
-      })
-
+    test('it should get the list related to the user from the top', async () => {
       const response = await server.inject({
         method: 'GET',
         url: `/users/davide/notifications`
       })
 
       expect(response.statusCode).to.equal(200)
-      const result = JSON.parse(response.payload)
+      const { items, hasMore } = JSON.parse(response.payload)
 
-      expect(result.length).to.be.equal(2)
-      expect(result[0].notify).to.be.equal({ content: 'Some notification content for Davide' })
-      expect(result[1].notify).to.be.equal({ content: 'another notification for Davide' })
+      expect(items.length).to.be.equal(5)
+      expect(items[0].notify.content).to.be.equal('Some notification content 9')
+      expect(items[1].notify.content).to.be.equal('Some notification content 8')
+      expect(items[2].notify.content).to.be.equal('Some notification content 7')
+      expect(items[3].notify.content).to.be.equal('Some notification content 6')
+      expect(items[4].notify.content).to.be.equal('Some notification content 5')
+      expect(hasMore).to.be.true()
+    })
+
+    test('it should get the list related to the user from a specific ID', async () => {
+      const response = await server.inject({
+        method: 'GET',
+        url: `/users/davide/notifications/5`
+      })
+
+      expect(response.statusCode).to.equal(200)
+      const { items, hasMore } = JSON.parse(response.payload)
+
+      expect(items.length).to.be.equal(4)
+      expect(items[0].notify.content).to.be.equal('Some notification content 4')
+      expect(items[1].notify.content).to.be.equal('Some notification content 3')
+      expect(items[2].notify.content).to.be.equal('Some notification content 2')
+      expect(items[3].notify.content).to.be.equal('Some notification content 1')
+      expect(hasMore).to.be.false()
+    })
+
+    test('it should get the list related to the user from a specific ID without any results', async () => {
+      const response = await server.inject({
+        method: 'GET',
+        url: `/users/filippo/notifications/5`
+      })
+
+      expect(response.statusCode).to.equal(200)
+      const { items, hasMore } = JSON.parse(response.payload)
+
+      expect(items.length).to.be.equal(0)
+      expect(hasMore).to.be.false()
     })
   })
 
