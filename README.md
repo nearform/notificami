@@ -49,7 +49,9 @@ The storage parameters should be an object with the following interface:
 
   async add({ notify, sendStrategy, userIdentifier }) {}
 
-  async getByUserIdentifier(userIdentifier) {}
+  async getByUserIdentifier(userIdentifier, offsetId, limit) {}
+
+  async hasMoreByUserIdentifier(userIdentifier, offsetId, limit) {}
 
   async get(id) {}
 
