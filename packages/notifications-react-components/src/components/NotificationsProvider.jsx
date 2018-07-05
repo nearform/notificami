@@ -13,6 +13,8 @@ export class NotificationsProvider extends React.Component {
       NotificationItem: this.props.NotificationItem,
       notifications: [],
       removeNotificationFromList: this.removeNotificationFromList.bind(this),
+      setNotificationUnread: this.setNotificationUnread.bind(this),
+      setNotificationRead: this.setNotificationRead.bind(this),
       toggleList: this.toggleList.bind(this),
       closeList: this.closeList.bind(this),
       loadMore: this.loadMore.bind(this),
@@ -31,6 +33,10 @@ export class NotificationsProvider extends React.Component {
         return e.id
       })
     })
+  }
+
+  handleError(e) {
+    this.props.onError && this.props.onError(e)
   }
 
   async loadMore() {
@@ -63,6 +69,7 @@ export class NotificationsProvider extends React.Component {
         loadMoreError: e.message,
         isLoadingMore: false
       })
+      this.handleError(e)
     }
   }
 
@@ -74,7 +81,7 @@ export class NotificationsProvider extends React.Component {
     this.setState({ showList: false })
   }
 
-  removeNotificationFromList(notification) {
+  async setNotificationRead(notification) {
     let notifications = this.state.notifications
     const index = notifications.findIndex(n => {
       return n.id === notification.id
@@ -84,11 +91,57 @@ export class NotificationsProvider extends React.Component {
       return
     }
 
-    notifications.splice(index, 1)
+    try {
+      const updatedNotification = await this.state.service.setNotificationRead(notification)
+      this.setState({
+        notifications: [...notifications.slice(0, index), updatedNotification, ...notifications.slice(index + 1)]
+      })
+    } catch (e) {
+      this.handleError(e)
+    }
+  }
 
-    this.setState({
-      notifications
+  async setNotificationUnread(notification) {
+    let notifications = this.state.notifications
+    const index = notifications.findIndex(n => {
+      return n.id === notification.id
     })
+
+    if (index === -1) {
+      return
+    }
+
+    try {
+      const updatedNotification = await this.state.service.setNotificationUnread(notification)
+      this.setState({
+        notifications: [...notifications.slice(0, index), updatedNotification, ...notifications.slice(index + 1)]
+      })
+    } catch (e) {
+      this.handleError(e)
+    }
+  }
+
+  async removeNotificationFromList(notification) {
+    let notifications = this.state.notifications
+    const index = notifications.findIndex(n => {
+      return n.id === notification.id
+    })
+
+    if (index === -1) {
+      return
+    }
+
+    try {
+      await this.state.service.removeNotification(notification)
+
+      notifications.splice(index, 1)
+
+      this.setState({
+        notifications
+      })
+    } catch (e) {
+      this.handleError(e)
+    }
   }
 
   async componentDidMount() {
@@ -132,6 +185,7 @@ export class NotificationsProvider extends React.Component {
       if (!!this.state.active || !!this.state.service) {
         this.setServiceInactive()
       }
+      this.handleError(e)
     }
   }
 
@@ -181,5 +235,6 @@ NotificationsProvider.displayName = 'NotificationsProvider'
 NotificationsProvider.propTypes = {
   userIdentifier: PropTypes.string.isRequired,
   service: PropTypes.object,
-  children: childrenPropInterface
+  children: childrenPropInterface,
+  onError: PropTypes.func
 }

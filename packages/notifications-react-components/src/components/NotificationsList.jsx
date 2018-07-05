@@ -7,10 +7,21 @@ import { NotificationsWrapper } from './NotificationsProvider'
 class DefaultNotificationItem extends React.Component {
   render() {
     return (
-      <div className="notifications-list-item">
+      <div className={`notifications-list-item ${this.props.notification.readAt ? 'read' : ''}`}>
         <div>{this.props.notification.notify.content}</div>
         {this.props.notification.notify.url && <a href={this.props.notification.notify.url}>Go see it...</a>}
-        <button onClick={this.props.onRemove}>X</button>
+        {this.props.notification.readAt ? (
+          <button className="btn-unread" onClick={this.props.onSetUnread}>
+            Set unread
+          </button>
+        ) : (
+          <button className="btn-read" onClick={this.props.onSetRead}>
+            Set read
+          </button>
+        )}
+        <button className="btn-remove" onClick={this.props.onRemove}>
+          X
+        </button>
       </div>
     )
   }
@@ -18,7 +29,9 @@ class DefaultNotificationItem extends React.Component {
 
 DefaultNotificationItem.propTypes = {
   notification: PropTypes.object.isRequired,
-  onRemove: PropTypes.func
+  onRemove: PropTypes.func,
+  onSetRead: PropTypes.func,
+  onSetUnread: PropTypes.func
 }
 
 export class NotificationsListBase extends React.Component {
@@ -74,6 +87,8 @@ export class NotificationsListBase extends React.Component {
               key={notification.id}
               notification={notification}
               onRemove={() => this.props.removeNotificationFromList(notification)}
+              onSetUnread={() => this.props.setNotificationUnread(notification)}
+              onSetRead={() => this.props.setNotificationRead(notification)}
             />
           ))}
         </div>
@@ -89,6 +104,8 @@ NotificationsListBase.propTypes = {
   hasMore: PropTypes.bool,
   isLoadingMore: PropTypes.bool,
   loadMore: PropTypes.func,
+  setNotificationRead: PropTypes.func,
+  setNotificationUnread: PropTypes.func,
   NotificationItem: PropTypes.func,
   removeNotificationFromList: PropTypes.func,
   closeList: PropTypes.func.isRequired

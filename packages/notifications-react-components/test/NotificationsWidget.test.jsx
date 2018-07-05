@@ -10,12 +10,22 @@ export async function delay(timeout = 10) {
   return new Promise(resolve => setTimeout(resolve, timeout))
 }
 
-const mockWebSocketService = ({ subscriptionError = false } = {}) => {
+const mockWebSocketService = ({
+  subscriptionError = false,
+  getNotifications = async () => {},
+  removeNotification = async () => {},
+  setNotificationRead = async () => {},
+  setNotificationUnread = async () => {}
+} = {}) => {
   let called = 0
   let user
   let callback
 
   return {
+    getNotifications,
+    removeNotification,
+    setNotificationRead,
+    setNotificationUnread,
     onUserNotification: async (u, c) => {
       called++
 
@@ -83,7 +93,7 @@ describe('NotificationsWidget', () => {
     expect(wrapper.find('div.notifications-list-item').length).toBe(1)
   })
 
-  test('click on remove button will remove the nitification', async () => {
+  test('click on remove button will remove the notification', async () => {
     await delay()
 
     service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello', url: 'someurl' } } })
@@ -92,8 +102,65 @@ describe('NotificationsWidget', () => {
     wrapper.update()
     await delay()
     expect(wrapper.find(NotificationsList).length).toBe(1)
-    wrapper.find('div.notifications-list-item button').simulate('click')
+    wrapper.find('div.notifications-list-item button.btn-remove').simulate('click')
+    await delay()
     expect(wrapper.state().notifications).toEqual([])
+  })
+
+  test('click on setRead button will set the notification read', async () => {
+    const setNotificationReadMock = jest.fn()
+    const now = Date.now()
+    setNotificationReadMock.mockReturnValueOnce({ id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: now })
+    service = mockWebSocketService({ setNotificationRead: setNotificationReadMock })
+    wrapper = mount(
+      <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificationsWidget />
+      </NotificationsProvider>
+    )
+    await delay()
+
+    service.getCallback()({
+      type: 'new',
+      payload: { id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: null }
+    })
+    expect(wrapper.find(NotificationsBox).length).toBe(1)
+    wrapper.instance().toggleList()
+    wrapper.update()
+    await delay()
+    expect(wrapper.find(NotificationsList).length).toBe(1)
+    wrapper.find('div.notifications-list-item button.btn-read').simulate('click')
+    await delay()
+    expect(wrapper.state().notifications).toEqual([
+      { id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: now }
+    ])
+  })
+
+  test('click on setUnread button will set the notification unread', async () => {
+    const setNotificationUnreadMock = jest.fn()
+    const now = Date.now()
+    setNotificationUnreadMock.mockReturnValueOnce({ id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: null })
+    service = mockWebSocketService({ setNotificationUnread: setNotificationUnreadMock })
+    wrapper = mount(
+      <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificationsWidget />
+      </NotificationsProvider>
+    )
+    await delay()
+
+    service.getCallback()({
+      type: 'new',
+      payload: { id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: now }
+    })
+    expect(wrapper.find(NotificationsBox).length).toBe(1)
+    wrapper.instance().toggleList()
+    wrapper.update()
+    await delay()
+    expect(wrapper.find(NotificationsList).length).toBe(1)
+    wrapper.find('div.notifications-list-item button.btn-unread').simulate('click')
+    await delay()
+    expect(wrapper.state().notifications).toEqual([
+      { id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: null }
+    ])
   })
 
   test('If a NotificationItem is passed is used intead of the default', async () => {

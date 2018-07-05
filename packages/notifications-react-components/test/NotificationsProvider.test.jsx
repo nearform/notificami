@@ -14,13 +14,22 @@ function PropsChildren(props) {
   return <span>test</span>
 }
 
-const mockWebSocketService = ({ subscriptionError = false, getNotifications = async () => {} } = {}) => {
+const mockWebSocketService = ({
+  subscriptionError = false,
+  getNotifications = async () => {},
+  removeNotification = async () => {},
+  setNotificationRead = async () => {},
+  setNotificationUnread = async () => {}
+} = {}) => {
   let called = 0
   let user
   let callback
 
   return {
     getNotifications,
+    removeNotification,
+    setNotificationRead,
+    setNotificationUnread,
     onUserNotification: async (u, c) => {
       called++
 
@@ -159,6 +168,28 @@ describe('NotificationsProvider', () => {
       wrapper.unmount()
     })
 
+    test('removeNotification should handle the error in case of error', async () => {
+      const removeNotificationMock = jest.fn()
+      service = mockWebSocketService({ removeNotification: removeNotificationMock })
+
+      const onErrorMock = jest.fn()
+      wrapper = mount(
+        <NotificationsProvider userIdentifier="test" service={service} onError={onErrorMock}>
+          <div />
+        </NotificationsProvider>
+      )
+
+      await delay()
+      service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello' } } })
+      const error = new Error('some error')
+      removeNotificationMock.mockImplementationOnce(() => {
+        throw error
+      })
+
+      await wrapper.instance().removeNotificationFromList({ id: 1, notify: { content: 'hello' } })
+      expect(onErrorMock).toHaveBeenCalledWith(error)
+    })
+
     test('when the component is updated it should refresh the notification list', async () => {
       wrapper.setProps({ userIdentifier: 'test2' })
       await delay()
@@ -272,5 +303,25 @@ describe('NotificationsProvider', () => {
       expect(wrapper.state().hasMore).toBeFalsy()
       expect(wrapper.state().loadMoreError).toBe('some error')
     })
+  })
+
+  test('loadMore should call the handleError in case of error', async () => {
+    const getNotificationsMock = jest.fn()
+    service = mockWebSocketService({ getNotifications: getNotificationsMock })
+
+    const onErrorMock = jest.fn()
+    wrapper = mount(
+      <NotificationsProvider userIdentifier="test" service={service} onError={onErrorMock}>
+        <div />
+      </NotificationsProvider>
+    )
+
+    const error = new Error('some error')
+    getNotificationsMock.mockImplementationOnce(() => {
+      throw error
+    })
+
+    await wrapper.instance().loadMore()
+    expect(onErrorMock).toHaveBeenCalledWith(error)
   })
 })
