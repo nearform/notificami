@@ -51,6 +51,44 @@ module.exports = {
     })
 
     server.route({
+      method: 'POST',
+      path: '/notifications/{id}/read',
+      handler: async function(request, h) {
+        const { id } = request.params
+
+        return request.notificationsService.setRead({ id })
+      },
+      options: {
+        cors,
+        auth,
+        validate: {
+          params: {
+            id: Joi.number().required()
+          }
+        }
+      }
+    })
+
+    server.route({
+      method: 'POST',
+      path: '/notifications/{id}/unread',
+      handler: async function(request, h) {
+        const { id } = request.params
+
+        return request.notificationsService.setUnread({ id })
+      },
+      options: {
+        cors,
+        auth,
+        validate: {
+          params: {
+            id: Joi.number().required()
+          }
+        }
+      }
+    })
+
+    server.route({
       method: 'DELETE',
       path: '/notifications/{id}',
       handler: async function(request, h) {
