@@ -119,6 +119,14 @@ module.exports = function buildNotificationService(storage, config = {}) {
       return notification
     }
 
+    async setUnread({ id }) {
+      let notification = await storage.setUnread({ id })
+
+      this.emit('unread', notification)
+
+      return notification
+    }
+
     async delete({ id }) {
       let notification = await storage.delete({ id })
 

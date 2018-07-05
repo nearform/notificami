@@ -87,6 +87,33 @@ describe('Notifications events', () => {
     })
   })
 
+  describe('setting unread', () => {
+    test('should correctly set the notification to read', async () => {
+      let done
+
+      const notification = {
+        notify: { user: 'davide', content: 'Some notification content' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      }
+
+      const p = new Promise(resolve => {
+        done = resolve
+      })
+
+      this.notificationsService.on('unread', c => {
+        expect(c.id).to.be.number()
+        expect(c.readAt).to.be.null()
+        done()
+      })
+
+      let result = await this.notificationsService.add(notification)
+      await this.notificationsService.setRead({ id: result.id })
+      await this.notificationsService.setUnread({ id: result.id })
+      await p
+    })
+  })
+
   describe('set deleted', () => {
     test('should correctly set the notification to deleted', async () => {
       let done

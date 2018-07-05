@@ -139,6 +139,30 @@ describe('Notification', () => {
     })
   })
 
+  describe('setting unread', () => {
+    test('should throw an error when a non existing notification is requested', async () => {
+      await expect(this.notificationsService.setUnread({ id: -1 })).to.reject(
+        Error,
+        'Cannot find notification with id -1'
+      )
+    })
+
+    test('should correctly set the notification to read', async () => {
+      const notification = {
+        notify: { user: 'davide', content: 'Some notification content' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      }
+
+      let result = await this.notificationsService.add(notification)
+      expect(result.id).to.be.number()
+      result = await this.notificationsService.setRead({ id: result.id })
+      expect(result.readAt).not.be.null()
+      result = await this.notificationsService.setUnread({ id: result.id })
+      expect(result.readAt).to.be.null()
+    })
+  })
+
   describe('set deleted', () => {
     test('should throw an error when a non existing notification is requested', async () => {
       await expect(this.notificationsService.delete({ id: -1 })).to.reject(Error, 'Cannot find notification with id -1')
