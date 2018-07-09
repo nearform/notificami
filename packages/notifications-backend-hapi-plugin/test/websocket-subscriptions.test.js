@@ -58,13 +58,28 @@ describe('Notification Websocket - routes', () => {
       client = new Nes.Client('ws://127.0.0.1:8281')
       await client.connect()
 
+      await server.notificationsService.add({
+        notify: { user: 'davide', content: 'Some initial notification' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      })
+
+      let hasInit = false
+      let hasNew = false
       await new Promise((resolve, reject) => {
         async function handler({ payload, type }, flags) {
           if (type === 'init') {
-            expect(payload).to.equal({ items: [], hasMore: false })
+            hasInit = true
+            expect(payload.hasMore).to.be.false()
+            expect(payload.items[payload.items.length - 1].notify).to.be.equal({
+              content: 'Some initial notification',
+              user: 'davide'
+            })
           } else {
-            expect(payload.id).to.equal(1)
+            hasNew = true
             expect(payload.notify).to.equal({ user: 'davide', content: 'Some notification content' })
+          }
+          if (hasNew && hasInit) {
             client.disconnect().then(resolve)
           }
         }
@@ -77,7 +92,7 @@ describe('Notification Websocket - routes', () => {
           }
           const addedNotification = await server.notificationsService.add(notification)
 
-          await delay(100)
+          await delay(1000)
           server.notificationsService.send(addedNotification)
         })
       })
