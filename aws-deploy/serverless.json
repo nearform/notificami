@@ -7,7 +7,8 @@
     "region": "${self:custom.config.region}",
     "profile": "nearform-dev",
     "environment": {
-      "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}"
+      "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}",
+      "SQS_QUEUE_NAME": "${self:service}-${opt:stage, self:provider.stage}-queue.fifo"
     },
     "iamRoleStatements": [
       {
@@ -22,6 +23,17 @@
         ],
         "Resource":
           "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sqs:SendMessage",
+          "sqs:DeleteMessage",
+          "sqs:ReceiveMessage"
+        ],
+        "Resource": [{
+          "Fn::GetAtt": [ "NotificationsSQSQueue", "Arn" ]
+        }]
       }
     ]
   },
@@ -35,6 +47,13 @@
   "plugins": ["serverless-stack-output", "serverless-offline"],
   "resources": {
     "Resources": {
+      "NotificationsSQSQueue": {
+        "Type": "AWS::SQS::Queue",
+        "Properties": {
+          "FifoQueue" : true,
+          "QueueName": "${self:provider.environment.SQS_QUEUE_NAME}"
+        }
+      },
       "NotificationsDynamoDbTable": {
         "Type": "AWS::DynamoDB::Table",
         "DeletionPolicy": "Delete",
@@ -138,6 +157,20 @@
       "DynamoTableARN": {
         "Value": { "Fn::GetAtt": ["NotificationsDynamoDbTable", "Arn"] },
         "Export": {"Name": "DynamoTableARN"}
+      },
+      "SQSQueueARN": {
+        "Value": { "Fn::GetAtt": ["NotificationsSQSQueue", "Arn"] },
+        "Export": {"Name": "SQSQueueARN"}
+      },
+      "SQSQueueName": {
+        "Value": { "Fn::GetAtt": ["NotificationsSQSQueue", "QueueName"] },
+        "Export": {"Name": "SQSQueueName"}
+      },
+      "SQSQueueURL": {
+         "Description": "The URL of the queue",
+         "Value": {
+            "Ref": "NotificationsSQSQueue"
+         }
       }
     }
   }
