@@ -24,7 +24,6 @@
   "devDependencies": {
     "code": "^5.2.0",
     "dynamodb-local": "0.0.22",
-    "lab": "^15.4.5",
-    "sinon": "^5.0.10"
+    "lab": "^15.4.5"
   }
 }
