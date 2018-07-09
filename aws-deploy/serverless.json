@@ -5,17 +5,8 @@
     "runtime": "nodejs8.10",
     "stage": "dev",
     "region": "${self:custom.config.region}",
-    "profile": "cognito",
+    "profile": "nearform-dev",
     "environment": {
-      "USER_POOL": {
-        "Fn::GetAtt": ["CognitoUserPoolDefault", "Arn"]
-      },
-      "APP_USER_POOL_CLIENT_ID": {
-        "Ref": "CognitoUserPoolClientDefault"
-      },
-      "APP_USER_POOL_ID": {
-        "Ref": "CognitoUserPoolDefault"
-      },
       "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}"
     },
     "iamRoleStatements": [
@@ -143,7 +134,11 @@
         "Value": { "Fn::GetAtt": ["ApplicationUserAccessKey", "SecretAccessKey"] },
         "Export": { "Name": "ApplicationUserSecretAccessKey" }
       },
-      "Region": { "Value": { "Ref": "AWS::Region" }, "Export": { "Name": "Region" } }
+      "Region": { "Value": { "Ref": "AWS::Region" }, "Export": { "Name": "Region" } },
+      "DynamoTableARN": {
+        "Value": { "Fn::GetAtt": ["NotificationsDynamoDbTable", "Arn"] },
+        "Export": {"Name": "DynamoTableARN"}
+      }
     }
   }
 }
