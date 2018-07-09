@@ -19,11 +19,19 @@ exports.plugin = {
         setTimeout(async () => {
           const { user } = params
           const results = await server.notificationsService.getByUserIdentifier(user)
-          let hasMore = false
-          if (results.length > 0) {
-            hasMore = await server.notificationsService.hasMoreByUserIdentifier(user, results[results.length - 1].id)
+          if (results.hasMore === undefined) {
+            results.hasMore = false
+            if (results.length > 0) {
+              results.hasMore = await server.notificationsService.hasMoreByUserIdentifier(
+                user,
+                results.items[results.items.length - 1].id
+              )
+            }
           }
-          await server.publish(`/users/${params.user}`, { type: 'init', payload: { items: results, hasMore } })
+          await server.publish(`/users/${params.user}`, {
+            type: 'init',
+            payload: { items: results.items, hasMore: results.hasMore }
+          })
         })
       }
     })
