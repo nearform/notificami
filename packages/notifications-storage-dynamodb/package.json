@@ -1,0 +1,30 @@
+{
+  "name": "notifications-storage-dynamodb",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "coverage": "NODE_ENV=test DDB_SERVER=local lab -c --coverage-exclude config -r lcov test/lib",
+    "depcheck": "../../node_modules/depcheck/bin/depcheck",
+    "test": "NODE_ENV=test DDB_SERVER=local lab -c --coverage-exclude config test/lib",
+    "test:remote": "NODE_ENV=test DDB_SERVER=remote DDB_STACK_PATH=\"../../../../aws-deploy/config/stack.json\" lab -c --coverage-exclude config test/lib",
+    "dynamodb:local:start": "node ./test/startServer.js"
+  },
+  "author": "nearForm Ltd",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Filippo De Santis (https://github.com/p16)",
+    "Davide Fiorello (https://github.com/codeflyer)"
+  ],
+  "dependencies": {
+    "aws-sdk": "^2.268.1",
+    "uuid": "^3.3.2",
+    "notifications-backend-core": "^0.0.1"
+  },
+  "devDependencies": {
+    "code": "^5.2.0",
+    "dynamodb-local": "0.0.22",
+    "lab": "^15.4.5",
+    "sinon": "^5.0.10"
+  }
+}
