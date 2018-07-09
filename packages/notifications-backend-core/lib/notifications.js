@@ -99,8 +99,12 @@ module.exports = function buildNotificationService(storage, config = {}) {
       return notification
     }
 
-    async getByUserIdentifier(userIdentifier) {
-      return storage.getByUserIdentifier(userIdentifier)
+    async getByUserIdentifier(userIdentifier, offsetId, limit) {
+      return storage.getByUserIdentifier(userIdentifier, offsetId, limit)
+    }
+
+    async hasMoreByUserIdentifier(userIdentifier, offsetId) {
+      return storage.hasMoreByUserIdentifier(userIdentifier, offsetId)
     }
 
     async get(id) {

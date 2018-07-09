@@ -9,17 +9,23 @@ module.exports = {
 
     server.route({
       method: 'GET',
-      path: '/users/{username}/notifications',
-      handler: function(request, h) {
-        const { username } = request.params
-        return request.notificationsService.getByUserIdentifier(username)
+      path: '/users/{username}/notifications/{offsetId?}',
+      handler: async function(request, h) {
+        const { username, offsetId } = request.params
+        const results = await request.notificationsService.getByUserIdentifier(username, offsetId)
+        let hasMore = false
+        if (results.length > 0) {
+          hasMore = await request.notificationsService.hasMoreByUserIdentifier(username, results[results.length - 1].id)
+        }
+        return { items: results, hasMore }
       },
       options: {
         cors,
         auth,
         validate: {
           params: {
-            username: Joi.string().required()
+            username: Joi.string().required(),
+            offsetId: Joi.string()
           }
         }
       }

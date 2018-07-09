@@ -117,40 +117,6 @@ describe('Notification', () => {
     })
   })
 
-  describe('getByUserIdentifier', () => {
-    test('should correctly return the notification list related to the user', async () => {
-      await this.notificationsService.add({
-        notify: { content: 'Some notification content for Davide' },
-        sendStrategy: 'default',
-        userIdentifier: 'davide'
-      })
-
-      await this.notificationsService.add({
-        notify: { content: 'a notification for Filippo' },
-        sendStrategy: 'default',
-        userIdentifier: 'filippo'
-      })
-
-      await this.notificationsService.add({
-        notify: { content: 'another notification for Davide' },
-        sendStrategy: 'default',
-        userIdentifier: 'davide'
-      })
-
-      let result = await this.notificationsService.getByUserIdentifier('davide')
-      expect(result.length).to.be.equal(2)
-      expect(result[0].notify).to.be.equal({ content: 'Some notification content for Davide' })
-      expect(result[1].notify).to.be.equal({ content: 'another notification for Davide' })
-
-      result = await this.notificationsService.getByUserIdentifier('filippo')
-      expect(result.length).to.be.equal(1)
-      expect(result[0].notify).to.be.equal({ content: 'a notification for Filippo' })
-
-      result = await this.notificationsService.getByUserIdentifier('jack')
-      expect(result.length).to.be.equal(0)
-    })
-  })
-
   describe('setting read', () => {
     test('should throw an error when a non existing notification is requested', async () => {
       await expect(this.notificationsService.setRead({ id: -1 })).to.reject(

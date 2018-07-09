@@ -24,7 +24,12 @@ class PostgresStorage {
     return notification
   }
 
-  async getByUserIdentifier(userIdentifier) {
+  async getByUserIdentifier(userIdentifier, offsetId, limit = 5) {
+    const filters = []
+    if (offsetId) {
+      filters.push(SQL`AND n.id < ${offsetId}`)
+    }
+
     const sql = SQL`
       SELECT
         n.*, json_agg(s) as sent_by
@@ -32,16 +37,42 @@ class PostgresStorage {
         notification n
       LEFT JOIN
         sent_by s ON s.notification_id = n.id
-      WHERE
-        n.user_identifier = ${userIdentifier} AND n.deleted_at IS null
-      GROUP BY
+      WHERE `
+
+    sql.append(SQL`n.user_identifier = ${userIdentifier}`)
+    sql.append(SQL`AND n.deleted_at IS NULL `)
+    sql.append(sql.glue(filters, ' AND '))
+    sql.append(SQL` GROUP BY
         n.id
       ORDER BY
-        n.created_at ASC
-    `
+        n.created_at DESC
+      LIMIT ${limit}
+    `)
 
     const res = await this.db.query(sql)
     return res.rows.map(row => this.mapNotificationFromDb(row))
+  }
+
+  async hasMoreByUserIdentifier(userIdentifier, offsetId) {
+    const filters = []
+    if (offsetId) {
+      filters.push(SQL`AND id < ${offsetId}`)
+    }
+
+    const sql = SQL`
+      SELECT
+        id
+      FROM
+        notification
+      WHERE `
+
+    sql.append(SQL`user_identifier = ${userIdentifier}`)
+    sql.append(SQL`AND deleted_at IS NULL `)
+    sql.append(sql.glue(filters, ' AND '))
+    sql.append(SQL`LIMIT 1`)
+
+    const res = await this.db.query(sql)
+    return res.rows.length > 0
   }
 
   async get(id) {

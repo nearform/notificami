@@ -34,6 +34,7 @@
     "outdated:all": "npm outdated || echo 'Outdated packages found.'; lerna exec \"npm outdated || echo 'Outdated packages found.'\"",
     "pg:init": "cd packages/notifications-backend-core && npm run pg:init",
     "pg:test:init": "cd packages/notifications-backend-core && npm run pg:test:init",
+    "pg:sample:init": "cd packages/notifications-backend-core && npm run pg:sample:init",
     "pg:migrate": "cd packages/notifications-backend-core && npm run pg:migrate",
     "postinstall": "lerna bootstrap",
     "sanity:environment": "npm run doc:lint && npm run lint && npm run depcheck",

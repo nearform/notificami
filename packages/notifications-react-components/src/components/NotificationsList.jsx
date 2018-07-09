@@ -34,6 +34,16 @@ export class NotificationsListBase extends React.Component {
     this.props.closeList()
   }
 
+  renderHasMoreButton() {
+    return this.props.isLoadingMore ? (
+      <div className="loading">Loading...</div>
+    ) : (
+      <div className="has-more" onClick={this.props.loadMore}>
+        Load more...
+      </div>
+    )
+  }
+
   render() {
     if (!this.props.active && (!this.props.notifications || this.props.notifications.length === 0)) {
       return (
@@ -58,13 +68,16 @@ export class NotificationsListBase extends React.Component {
       <div className="notifications-list">
         <h3>Notifications</h3>
 
-        {this.props.notifications.map(notification => (
-          <NotificationItem
-            key={notification.id}
-            notification={notification}
-            onRemove={() => this.props.removeNotificationFromList(notification)}
-          />
-        ))}
+        <div className="items">
+          {this.props.notifications.map(notification => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              onRemove={() => this.props.removeNotificationFromList(notification)}
+            />
+          ))}
+        </div>
+        {this.props.hasMore && this.renderHasMoreButton()}
       </div>
     )
   }
@@ -73,6 +86,9 @@ export class NotificationsListBase extends React.Component {
 NotificationsListBase.propTypes = {
   notifications: PropTypes.arrayOf(PropTypes.object),
   active: PropTypes.bool,
+  hasMore: PropTypes.bool,
+  isLoadingMore: PropTypes.bool,
+  loadMore: PropTypes.func,
   NotificationItem: PropTypes.func,
   removeNotificationFromList: PropTypes.func,
   closeList: PropTypes.func.isRequired

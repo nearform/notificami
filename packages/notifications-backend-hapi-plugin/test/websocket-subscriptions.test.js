@@ -10,6 +10,8 @@ const { describe, it: test, before, after, beforeEach } = module.exports.lab
 const { resetDb } = require('../../notifications-backend-core/test/utils')
 const buildServer = require('./test-server')
 
+const delay = (ms = 10) => new Promise(resolve => setTimeout(resolve, ms))
+
 describe('Notification Websocket - routes', () => {
   let server = null
   let client = null
@@ -57,10 +59,14 @@ describe('Notification Websocket - routes', () => {
       await client.connect()
 
       await new Promise((resolve, reject) => {
-        async function handler(event, flags) {
-          expect(event.id).to.equal(1)
-          expect(event.notify).to.equal({ user: 'davide', content: 'Some notification content' })
-          client.disconnect().then(resolve)
+        async function handler({ payload, type }, flags) {
+          if (type === 'init') {
+            expect(payload).to.equal({ items: [], hasMore: false })
+          } else {
+            expect(payload.id).to.equal(1)
+            expect(payload.notify).to.equal({ user: 'davide', content: 'Some notification content' })
+            client.disconnect().then(resolve)
+          }
         }
 
         return client.subscribe(`/users/davide`, handler).then(async () => {
@@ -71,6 +77,7 @@ describe('Notification Websocket - routes', () => {
           }
           const addedNotification = await server.notificationsService.add(notification)
 
+          await delay(100)
           server.notificationsService.send(addedNotification)
         })
       })

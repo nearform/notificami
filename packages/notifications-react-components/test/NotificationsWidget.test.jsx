@@ -74,7 +74,7 @@ describe('NotificationsWidget', () => {
   test('after adding a notification the list should not be empty', async () => {
     await delay()
 
-    service.getCallback()({ id: 1, notify: { content: 'hello' } })
+    service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello' } } })
     expect(wrapper.find(NotificationsBox).length).toBe(1)
     wrapper.instance().toggleList()
     wrapper.update()
@@ -86,7 +86,7 @@ describe('NotificationsWidget', () => {
   test('click on remove button will remove the nitification', async () => {
     await delay()
 
-    service.getCallback()({ id: 1, notify: { content: 'hello', url: 'someurl' } })
+    service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello', url: 'someurl' } } })
     expect(wrapper.find(NotificationsBox).length).toBe(1)
     wrapper.instance().toggleList()
     wrapper.update()
@@ -108,7 +108,7 @@ describe('NotificationsWidget', () => {
     )
     await delay()
 
-    service.getCallback()({ id: 1, notify: { content: 'hello' } })
+    service.getCallback()({ type: 'new', payload: { id: 1, notify: { content: 'hello' } } })
     expect(wrapper.find(NotificationsBox).length).toBe(1)
     wrapper.instance().toggleList()
     wrapper.update()

@@ -49,7 +49,9 @@ The storage parameters should be an object with the following interface:
 
   async add({ notify, sendStrategy, userIdentifier }) {}
 
-  async getByUserIdentifier(userIdentifier) {}
+  async getByUserIdentifier(userIdentifier, offsetId, limit) {}
+
+  async hasMoreByUserIdentifier(userIdentifier, offsetId, limit) {}
 
   async get(id) {}
 
@@ -111,9 +113,17 @@ The notification service will also proxy all the storage interface functions and
 
 This plugin will add a set of HTTP REST endpoints to a hapi server.
 
-**GET /users/{username}/notifications**
+**GET /users/{username}/notifications/{offsetId?}**
 
-This endpoint will return the list of notifications for a user.
+This endpoint will return the list of notifications for a user from the newest to the oldest starting from the notification with ID=`offestId`. If `offsetId`is not defined, the newest notifications are returned.
+
+Return structure:
+```
+{
+  items: [...],
+  hasMore: true|false
+}
+```
 
 **POST /notifications**
 

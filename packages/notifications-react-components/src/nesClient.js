@@ -6,7 +6,24 @@ export function buildWebsocketClient(baseUrl, options) {
 
 export function WebsocketService(client) {
   /**
-   *
+   * Get the notification list
+   * @param string user
+   * @param string|number offsetId
+   * @returns {Promise<Comments[]>}
+   */
+  const getNotifications = async (user, offsetId) => {
+    let response
+    if (offsetId) {
+      response = await client.request(`/users/${user}/notifications/${offsetId}`)
+    } else {
+      response = await client.request(`/users/${user}/notifications`)
+    }
+    const { payload } = response
+    return payload
+  }
+
+  /**
+   * Subscribe on user notifications
    * @param user identifier
    * @param {socketEventCallback} handler
    * @returns {Promise<*>}
@@ -18,6 +35,7 @@ export function WebsocketService(client) {
   }
 
   return {
+    getNotifications,
     onUserNotification
   }
 }
