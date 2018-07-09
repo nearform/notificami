@@ -1,0 +1,149 @@
+{
+  "service": "notifications",
+  "provider": {
+    "name": "aws",
+    "runtime": "nodejs8.10",
+    "stage": "dev",
+    "region": "${self:custom.config.region}",
+    "profile": "cognito",
+    "environment": {
+      "USER_POOL": {
+        "Fn::GetAtt": ["CognitoUserPoolDefault", "Arn"]
+      },
+      "APP_USER_POOL_CLIENT_ID": {
+        "Ref": "CognitoUserPoolClientDefault"
+      },
+      "APP_USER_POOL_ID": {
+        "Ref": "CognitoUserPoolDefault"
+      },
+      "DYNAMODB_TABLE": "${self:service}-${opt:stage, self:provider.stage}"
+    },
+    "iamRoleStatements": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem"
+        ],
+        "Resource":
+          "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      }
+    ]
+  },
+  "custom": {
+    "config": "${file(./config/deployValues.json)}",
+    "output": {
+      "handler": "scripts/serverlessOutput.handler",
+      "file": "config/stack.json"
+    }
+  },
+  "plugins": ["serverless-stack-output", "serverless-offline"],
+  "resources": {
+    "Resources": {
+      "NotificationsDynamoDbTable": {
+        "Type": "AWS::DynamoDB::Table",
+        "DeletionPolicy": "Delete",
+        "Properties": {
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "UserIdentifier",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "Id",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "UserIdentifier",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "Id",
+              "KeyType": "RANGE"
+            }
+          ],
+          "GlobalSecondaryIndexes": [
+            {
+              "IndexName": "UUIDIndex",
+              "KeySchema": [{
+                "AttributeName": "Id",
+                "KeyType": "HASH"
+              }],
+              "Projection": {
+                "ProjectionType": "ALL"
+              },
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+          },
+          "TableName": "${self:provider.environment.DYNAMODB_TABLE}"
+        }
+      },
+      "ApplicationAccessManagedPolicy": {
+        "Type": "AWS::IAM::ManagedPolicy",
+        "Properties": {
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Resource": {
+                  "Fn::Join": ["", [{ "Fn::GetAtt": ["NotificationsDynamoDbTable", "Arn"] }, "*"]]
+                },
+                "Action": [
+                  "dynamodb:ListTables",
+                  "dynamodb:Query",
+                  "dynamodb:Scan",
+                  "dynamodb:GetItem",
+                  "dynamodb:PutItem",
+                  "dynamodb:UpdateItem",
+                  "dynamodb:DeleteItem"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "ApplicationUser": {
+        "Type": "AWS::IAM::User",
+        "Properties": {
+          "ManagedPolicyArns": [{ "Ref": "ApplicationAccessManagedPolicy" }],
+          "UserName": "${self:service}-user"
+        }
+      },
+      "ApplicationUserAccessKey": {
+        "Type": "AWS::IAM::AccessKey",
+        "Properties": {
+          "UserName": { "Ref": "ApplicationUser" }
+        }
+      }
+    },
+    "Outputs": {
+      "TableName": {
+        "Value": { "Ref": "NotificationsDynamoDbTable" },
+        "Export": { "Name": "TableName" }
+      },
+      "ApplicationUserAccessKey": {
+        "Value": { "Ref": "ApplicationUserAccessKey" },
+        "Export": { "Name": "ApplicationUserAccessKey" }
+      },
+      "ApplicationUserSecretAccessKey": {
+        "Value": { "Fn::GetAtt": ["ApplicationUserAccessKey", "SecretAccessKey"] },
+        "Export": { "Name": "ApplicationUserSecretAccessKey" }
+      },
+      "Region": { "Value": { "Ref": "AWS::Region" }, "Export": { "Name": "Region" } }
+    }
+  }
+}

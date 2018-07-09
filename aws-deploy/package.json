@@ -1,0 +1,21 @@
+{
+  "name": "aws-deploy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nearForm Ltd",
+  "license": "Apache-2.0",
+  "contributors": [
+    "Filippo De Santis (https://github.com/p16)",
+    "Davide Fiorello (https://github.com/codeflyer)"
+  ],
+  "dependencies": {
+    "aws-sdk": "^2.268.1",
+    "serverless": "^1.28.0",
+    "serverless-offline": "^3.25.5",
+    "serverless-stack-output": "^0.2.3"
+  }
+}
