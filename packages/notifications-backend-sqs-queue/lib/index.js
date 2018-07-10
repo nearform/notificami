@@ -1,20 +1,20 @@
 'use strict'
 
-// const producer = require('./producer')
-// const consumer = require('./consumer')
+const Producer = require('./producer')
+const Consumer = require('./consumer')
 
 async function register(server, options = {}) {
-  // TO DO ...
-  // consumer.consume(options.queueName, async notification => {
-  //   try {
-  //     await server.notificationsService.send(notification, notification.sendStrategy)
-  //   } catch (e) {
-  //     server.log(['error', 'notification', 'send'], e)
-  //   }
-  // })
-  // server.notificationsService.on('add', async notification => {
-  //   await producer.sendToQueue(options.queueName, notification)
-  // })
+  if (!options || !options.SQSInstance || !options.config) {
+    throw new Error('Cannot find configuration for SQS')
+  }
+
+  const { SQSInstance, config, handler } = options
+
+  if (handler) {
+    server.decorate('server', 'sqsConsumer', new Consumer(SQSInstance, config, handler))
+  }
+
+  server.decorate('server', 'sqsProducer', new Producer(SQSInstance, config))
 }
 
 module.exports = {
