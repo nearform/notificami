@@ -1,17 +1,20 @@
 'use strict'
 
-const { SQS, awsStack } = require('./aws')
+class Producer {
+  constructor(SQS, awsConfig) {
+    this.SQS = SQS
+    this.awsConfig = awsConfig
+  }
 
-async function sendToQueue(queue, message = {}) {
-  const result = await SQS.sendMessage({
-    MessageBody: JSON.stringify(message),
-    QueueUrl: awsStack.SQSQueueURL,
-    MessageGroupId: 'notificatons-queue'
-  }).promise()
+  async sendToQueue(message = {}) {
+    const result = await this.SQS.sendMessage({
+      MessageBody: JSON.stringify(message),
+      QueueUrl: this.awsConfig.SQSQueueURL,
+      MessageGroupId: 'notificatons-queue'
+    }).promise()
 
-  return result
+    return result
+  }
 }
 
-module.exports = {
-  sendToQueue
-}
+module.exports = Producer
