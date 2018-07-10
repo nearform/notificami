@@ -1,7 +1,7 @@
 'use strict'
 
-const producer = require('./producer')
-const consumer = require('./consumer')
+// const producer = require('./producer')
+// const consumer = require('./consumer')
 
 async function register(server, options = {}) {
   // TO DO ...

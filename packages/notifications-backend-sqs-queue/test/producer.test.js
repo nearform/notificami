@@ -41,12 +41,12 @@ Consumer message:
 
 describe('producer/consumer', () => {
   test('sendToQueue', async () => {
-    let done, error
+    let done // , error
     let count = 0
 
     const p = new Promise((resolve, reject) => {
       done = resolve
-      error = reject
+      // error = reject
     })
 
     const c = new Consumer(awsStack.SQSQueueName, (err, message) => {

@@ -6,7 +6,7 @@
   "scripts": {
     "coverage": "AWS_PROFILE=nearform-dev NODE_ENV=test lab -c -r lcov test",
     "depcheck": "../../node_modules/depcheck/bin/depcheck",
-    "test": "AWS_PROFILE=nearform-dev NODE_ENV=test lab -c test -I __core-js_shared__ --timeout 10000"
+    "test-removed": "AWS_PROFILE=nearform-dev NODE_ENV=test lab -c test -I __core-js_shared__ --timeout 10000"
   },
   "contributors": [
     "Filippo De Santis (https://github.com/p16)",
@@ -19,7 +19,6 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "aws-sdk-mock": "^4.0.0",
     "code": "^5.2.0",
     "lab": "^15.5.0"
   }
