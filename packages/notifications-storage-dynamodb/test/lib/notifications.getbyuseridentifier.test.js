@@ -10,7 +10,16 @@ const { describe, it: test, before, after } = module.exports.lab
 const { buildNotificationsService } = require('notifications-backend-core')
 
 const notificationsMockData = require('./__mockData__/notifications')
-const config = require('../../config')
+const config = {
+  notifications: {
+    strategies: {
+      default: {
+        name: 'list-with-fallback',
+        channels: ['socket']
+      }
+    }
+  }
+}
 
 const DynamoDbStorage = require('../../lib')
 

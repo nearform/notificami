@@ -37,15 +37,11 @@ async function prepareDDB(awsStack) {
   const awsInit = {
     accessKeyId: awsStack.ApplicationUserAccessKey || 'some-useless-value',
     secretAccessKey: awsStack.ApplicationUserSecretAccessKey || 'some-useless-value',
-    region: awsStack.Region
-  }
-
-  if (awsStack.AWSendpoint) {
-    awsInit.endpoint = awsStack.AWSendpoint
+    region: awsStack.Region || 'local'
   }
 
   AWS.config.update(awsInit)
-  const dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', region: 'local' })
+  const dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', endpoint: awsStack.AWSendpoint })
 
   try {
     await dynamoDb.deleteTable({ TableName: awsStack.TableName }).promise()

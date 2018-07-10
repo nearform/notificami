@@ -7,8 +7,7 @@
     "coverage": "NODE_ENV=test DDB_SERVER=local lab -c --coverage-exclude config -r lcov test/lib",
     "depcheck": "../../node_modules/depcheck/bin/depcheck",
     "test": "NODE_ENV=test DDB_SERVER=local lab -c --coverage-exclude config  -I __core-js_shared__ test/lib",
-    "test:remote": "NODE_ENV=test DDB_SERVER=remote DDB_STACK_PATH=\"../../../../aws-deploy/config/stack.json\" lab -c --coverage-exclude config  -I __core-js_shared__ test/lib",
-    "dynamodb:local:start": "node ./test/startServer.js"
+    "test:remote": "NODE_ENV=test DDB_SERVER=remote DDB_STACK_PATH=\"../../../../aws-deploy/config/stack.json\" lab -c --coverage-exclude config  -I __core-js_shared__ test/lib"
   },
   "author": "nearForm Ltd",
   "license": "Apache-2.0",
