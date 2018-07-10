@@ -15,6 +15,16 @@ async function register(server, options = {}) {
   }
 
   server.decorate('server', 'sqsProducer', new Producer(SQSInstance, config))
+
+  if (handler && options.enableConsumer === true) {
+    server.sqsConsumer.consume()
+  }
+
+  if (options.enableProducer === true) {
+    server.notificationsService.on('add', async notification => {
+      await server.sqsProducer.sendToQueue(notification)
+    })
+  }
 }
 
 module.exports = {

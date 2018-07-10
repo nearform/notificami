@@ -14,12 +14,12 @@ class Consumer {
 
   consume() {
     this.start(this.queue, (err, message) => {
-      this.handler(err, message)
+      this.handler(err, message).catch(err => {
+        this.stopped = true
+        console.error(err)
+      })
 
       if (!this.stopped) this.consume()
-    }).catch(err => {
-      this.stopped = true
-      console.error(err)
     })
   }
 
