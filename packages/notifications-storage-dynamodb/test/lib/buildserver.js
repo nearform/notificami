@@ -106,27 +106,8 @@ async function prepareDDB(awsStack) {
   return dynamoDb
 }
 
-async function start() {
-  if (process.env.CI) {
-    const DynamoDbLocal = require('dynamodb-local')
-    const dynamoLocalPort = 8000
-
-    await DynamoDbLocal.launch(dynamoLocalPort, null, [], false, true)
-  }
-}
-
-async function stop() {
-  if (process.env.CI) {
-    const DynamoDbLocal = require('dynamodb-local')
-    const dynamoLocalPort = 8000
-    return DynamoDbLocal.stop(dynamoLocalPort)
-  }
-}
-
 module.exports = {
   getStack,
   resetDb,
-  start,
-  stop,
   prepareDDB
 }

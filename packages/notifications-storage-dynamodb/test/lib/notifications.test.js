@@ -4,7 +4,7 @@ const { expect } = require('code')
 const Lab = require('lab')
 module.exports.lab = Lab.script()
 
-const { start, stop, prepareDDB, resetDb, getStack } = require('./buildserver')
+const { prepareDDB, resetDb, getStack } = require('./buildserver')
 
 const { describe, it: test, before, after } = module.exports.lab
 const { buildNotificationsService } = require('notifications-backend-core')
@@ -17,7 +17,6 @@ const DynamoDbStorage = require('../../lib')
 describe('Notification', () => {
   const notificationList = []
   before({ timeout: process.env.CI ? 100000 : 20000 }, async () => {
-    await start()
     const awsStack = getStack()
     const dynamoDb = await prepareDDB(awsStack)
     await resetDb(dynamoDb, awsStack)
@@ -36,7 +35,6 @@ describe('Notification', () => {
 
   after(async () => {
     await this.notificationsService.close()
-    await stop()
   })
 
   describe('adding', () => {

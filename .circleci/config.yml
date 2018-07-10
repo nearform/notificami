@@ -11,6 +11,9 @@ jobs:
           PGPORT: 5432
           NODE_ENV: test
       - image: redis:4.0.9
+      - image: dwmkerr/dynamodb
+        ports:
+          - 8000:8000
     working_directory: ~/repo
     steps:
       - checkout
