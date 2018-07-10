@@ -2,6 +2,9 @@
 
 const { SQS, awsStack } = require('./aws')
 
+/**
+ * Should we use https://github.com/bbc/sqs-consumer ??
+ */
 class Consumer {
   constructor(queue, handler) {
     this.queue = queue
