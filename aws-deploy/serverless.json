@@ -50,8 +50,10 @@
       "NotificationsSQSQueue": {
         "Type": "AWS::SQS::Queue",
         "Properties": {
+          "ContentBasedDeduplication" : true,
           "FifoQueue" : true,
-          "QueueName": "${self:provider.environment.SQS_QUEUE_NAME}"
+          "QueueName": "${self:provider.environment.SQS_QUEUE_NAME}",
+          "ReceiveMessageWaitTimeSeconds": 10
         }
       },
       "NotificationsDynamoDbTable": {
