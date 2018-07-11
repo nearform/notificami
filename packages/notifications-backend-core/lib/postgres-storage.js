@@ -50,7 +50,7 @@ class PostgresStorage {
     `)
 
     const res = await this.db.query(sql)
-    return res.rows.map(row => this.mapNotificationFromDb(row))
+    return { items: res.rows.map(row => this.mapNotificationFromDb(row)) }
   }
 
   async hasMoreByUserIdentifier(userIdentifier, offsetId) {

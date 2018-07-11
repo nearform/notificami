@@ -3,41 +3,46 @@
 const { expect } = require('code')
 const Lab = require('lab')
 module.exports.lab = Lab.script()
-const { describe, it: test, beforeEach, before, after } = module.exports.lab
-const SQL = require('@nearform/sql')
 
-const { resetDb } = require('../utils')
-const config = require('../../config')
+const { prepareDDB, resetDb, getStack } = require('./buildserver')
+
+const { describe, it: test, before, after } = module.exports.lab
+const { buildNotificationsService } = require('notifications-backend-core')
+
 const notificationsMockData = require('./__mockData__/notifications')
-
-const { buildPool, buildNotificationsService, PostgresStorage } = require('../../lib')
-
-function addNotificationToDb(db, { notify, sendStrategy, userIdentifier, createdAt }) {
-  const sql = SQL`
-       INSERT INTO
-          notification (notify, send_strategy, user_identifier, created_at)
-        VALUES (${JSON.stringify(notify)}, ${sendStrategy}, ${userIdentifier}, ${createdAt})
-        RETURNING *
-    `
-  return db.query(sql)
+const config = {
+  notifications: {
+    strategies: {
+      default: {
+        name: 'list-with-fallback',
+        channels: ['socket']
+      }
+    }
+  }
 }
 
-describe('Notification - getByUserIdentifier', () => {
-  let db
-  before(async () => {
-    db = buildPool(config.pg)
-    this.notificationsService = buildNotificationsService(new PostgresStorage(db), config.notifications)
-  })
+const DynamoDbStorage = require('../../lib/storage')
 
-  beforeEach(async () => {
-    await resetDb()
+describe('Notification', () => {
+  const notificationList = []
+  before({ timeout: process.env.CI ? 100000 : 10000 }, async () => {
+    const awsStack = getStack()
+    const dynamoDb = await prepareDDB(awsStack)
+    await resetDb(dynamoDb, awsStack)
+
+    this.notificationsService = buildNotificationsService(
+      new DynamoDbStorage(dynamoDb, { TableName: awsStack.TableName }),
+      config.notifications
+    )
+    const storage = new DynamoDbStorage(dynamoDb, { TableName: awsStack.TableName })
     for (let notification of notificationsMockData) {
-      await addNotificationToDb(db, notification)
+      const result = await storage.add(notification)
+      notificationList.push(result)
     }
   })
 
-  after(() => {
-    return this.notificationsService.close()
+  after(async () => {
+    await this.notificationsService.close()
   })
 
   describe('hasMoreByUserIdentifier', () => {
@@ -51,9 +56,9 @@ describe('Notification - getByUserIdentifier', () => {
     })
 
     test('it should return false if is set the oldest norification', async () => {
-      let result = await this.notificationsService.hasMoreByUserIdentifier('davide', 1)
+      let result = await this.notificationsService.hasMoreByUserIdentifier('davide', notificationList[0].id)
       expect(result).to.be.false()
-      result = await this.notificationsService.hasMoreByUserIdentifier('filippo', 7)
+      result = await this.notificationsService.hasMoreByUserIdentifier('filippo', notificationList[6].id)
       expect(result).to.be.false()
     })
   })
@@ -89,7 +94,7 @@ describe('Notification - getByUserIdentifier', () => {
     })
 
     test('set a offsetId it should return the list of the notifications older than the ID', async () => {
-      let result = await this.notificationsService.getByUserIdentifier('davide', 5)
+      let result = await this.notificationsService.getByUserIdentifier('davide', notificationList[4].id)
       expect(result.items.length).to.be.equal(4)
       expect(result.items[0].notify.content).to.be.equal('Some notification content 4')
       expect(result.items[1].notify.content).to.be.equal('Some notification content 3')

@@ -6,6 +6,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - dynamodb
     ports:
       - "8080:8080"
     environment:
@@ -36,3 +37,7 @@ services:
     image: "redis:alpine"
     ports:
       - 6379:6379
+  dynamodb:
+    image: "dwmkerr/dynamodb"
+    ports:
+      - 8000:8000
