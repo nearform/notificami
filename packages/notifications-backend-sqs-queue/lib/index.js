@@ -1,14 +1,22 @@
 'use strict'
 
+const AWS = require('aws-sdk')
+
 const Producer = require('./producer')
 const Consumer = require('./consumer')
 
 async function register(server, options = {}) {
-  if (!options || !options.SQSInstance || !options.config) {
+  if (!options || !options.config) {
     throw new Error('Cannot find configuration for SQS')
   }
 
-  const { SQSInstance, config, handler } = options
+  let { SQSInstance, config, handler } = options
+
+  if (!SQSInstance) {
+    AWS.config.update(config.aws || {})
+
+    SQSInstance = new AWS.SQS(config.sqs || {})
+  }
 
   if (handler) {
     server.decorate('server', 'sqsConsumer', new Consumer(SQSInstance, config, handler))
