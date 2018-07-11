@@ -29,7 +29,7 @@ export function WebsocketService(client) {
    */
   const setNotificationRead = async notification => {
     const options = {
-      method: 'POST',
+      method: 'PUT',
       path: `/notifications/${notification.id}/read`
     }
 
@@ -43,7 +43,7 @@ export function WebsocketService(client) {
    */
   const setNotificationUnread = async notification => {
     const options = {
-      method: 'POST',
+      method: 'PUT',
       path: `/notifications/${notification.id}/unread`
     }
 

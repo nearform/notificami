@@ -56,7 +56,7 @@ module.exports = {
     })
 
     server.route({
-      method: 'POST',
+      method: 'PUT',
       path: '/notifications/{id}/read',
       handler: async function(request, h) {
         const { id } = request.params
@@ -75,7 +75,7 @@ module.exports = {
     })
 
     server.route({
-      method: 'POST',
+      method: 'PUT',
       path: '/notifications/{id}/unread',
       handler: async function(request, h) {
         const { id } = request.params

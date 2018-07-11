@@ -103,7 +103,7 @@ describe('WebsocketService', () => {
     mockRequest.mockReturnValue(response)
     const result = await service.setNotificationUnread({ id: 'not-1' })
     expect(mockRequest.mock.calls.length).toEqual(1)
-    expect(mockRequest.mock.calls[0][0]).toEqual({ method: 'POST', path: '/notifications/not-1/unread' })
+    expect(mockRequest.mock.calls[0][0]).toEqual({ method: 'PUT', path: '/notifications/not-1/unread' })
     expect(result).toEqual(response.payload)
   })
 
@@ -118,7 +118,7 @@ describe('WebsocketService', () => {
     mockRequest.mockReturnValue(response)
     const result = await service.setNotificationRead({ id: 'not-1' })
     expect(mockRequest.mock.calls.length).toEqual(1)
-    expect(mockRequest.mock.calls[0][0]).toEqual({ method: 'POST', path: '/notifications/not-1/read' })
+    expect(mockRequest.mock.calls[0][0]).toEqual({ method: 'PUT', path: '/notifications/not-1/read' })
     expect(result).toEqual(response.payload)
   })
 

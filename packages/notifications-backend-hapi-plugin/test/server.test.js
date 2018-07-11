@@ -130,7 +130,7 @@ describe('Notifications REST API', () => {
     })
   })
 
-  describe('POST /notifications/{id}/read', () => {
+  describe('PUT /notifications/{id}/read', () => {
     test('it should set a notification to read', async () => {
       const created = await server.notificationsService.add({
         notify: { content: 'Some notification content for Davide' },
@@ -139,7 +139,7 @@ describe('Notifications REST API', () => {
       })
 
       const response = await server.inject({
-        method: 'POST',
+        method: 'PUT',
         url: `/notifications/${created.id}/read`
       })
 
@@ -149,7 +149,7 @@ describe('Notifications REST API', () => {
     })
   })
 
-  describe('POST /notifications/{id}/unread', () => {
+  describe('PUT /notifications/{id}/unread', () => {
     test('it should set a notification to unread', async () => {
       const created = await server.notificationsService.add({
         notify: { content: 'Some notification content for Davide' },
@@ -158,12 +158,12 @@ describe('Notifications REST API', () => {
       })
 
       await server.inject({
-        method: 'POST',
+        method: 'PUT',
         url: `/notifications/${created.id}/read`
       })
 
       const response = await server.inject({
-        method: 'POST',
+        method: 'PUT',
         url: `/notifications/${created.id}/unread`
       })
 
