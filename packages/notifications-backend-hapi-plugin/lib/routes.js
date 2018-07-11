@@ -13,11 +13,16 @@ module.exports = {
       handler: async function(request, h) {
         const { username, offsetId } = request.params
         const results = await request.notificationsService.getByUserIdentifier(username, offsetId)
-        let hasMore = false
-        if (results.length > 0) {
-          hasMore = await request.notificationsService.hasMoreByUserIdentifier(username, results[results.length - 1].id)
+        if (results.hasMore === undefined) {
+          results.hasMore = false
+          if (results.items.length > 0) {
+            results.hasMore = await request.notificationsService.hasMoreByUserIdentifier(
+              username,
+              results.items[results.items.length - 1].id
+            )
+          }
         }
-        return { items: results, hasMore }
+        return { items: results.items, hasMore: results.hasMore }
       },
       options: {
         cors,
