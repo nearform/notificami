@@ -68,7 +68,6 @@ After installing the plugin, you can add the following lines to the server confi
               apiVersion: '2012-11-05'
             }
           },
-          handler: async () => {},
           enableConsumer: true,
           enableProducer: true
         }
