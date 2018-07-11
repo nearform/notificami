@@ -15,7 +15,7 @@ async function register(server, options = {}) {
   if (!SQSInstance) {
     AWS.config.update(config.aws || {})
 
-    SQSInstance = new AWS.SQS(config.sqs || {})
+    SQSInstance = new AWS.SQS(Object.assign({}, config.sqs || {}, { apiVersion: '2012-11-05' }))
   }
 
   server.decorate(

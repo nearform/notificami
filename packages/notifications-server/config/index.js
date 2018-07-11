@@ -9,25 +9,7 @@ const config = {
         plugin: 'notifications-channel-websocket-nes'
       }
     },
-    plugins: [
-      {
-        plugin: 'notifications-backend-sqs-queue',
-        options: {
-          config: {
-            SQSQueueURL: 'https://sqs.eu-west-1.amazonaws.com/382731911776/notifications-dev-queue.fifo',
-            SQSQueueName: 'notifications-dev-queue.fifo',
-            aws: {
-              region: 'eu-west-1'
-            },
-            sqs: {
-              apiVersion: '2012-11-05'
-            }
-          },
-          enableConsumer: true,
-          enableProducer: true
-        }
-      }
-    ],
+    plugins: [{ plugin: 'notifications-backend-test-queue' }],
     strategies: {
       default: {
         name: 'default-to-sockets',

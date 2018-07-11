@@ -2,7 +2,6 @@
 
 const { NF_NOTIFICATIONS_SERVER_HOST, NF_NOTIFICATIONS_SERVER_PORT } = process.env
 
-console.log('Carico questo')
 const awsStack = require(process.env.DDB_STACK_PATH)
 
 const config = {
@@ -12,7 +11,22 @@ const config = {
         plugin: 'notifications-channel-websocket-nes'
       }
     },
-    plugins: [{ plugin: 'notifications-backend-test-queue' }],
+    plugins: [
+      {
+        plugin: 'notifications-backend-sqs-queue',
+        options: {
+          config: {
+            SQSQueueURL: awsStack.SQSQueueURL,
+            SQSQueueName: awsStack.SQSQueueName,
+            aws: {
+              region: awsStack.Region
+            }
+          },
+          enableConsumer: true,
+          enableProducer: true
+        }
+      }
+    ],
     storage: { plugin: 'notifications-storage-dynamodb', options: awsStack },
     strategies: {
       default: {
