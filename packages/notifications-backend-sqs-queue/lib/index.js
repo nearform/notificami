@@ -10,7 +10,7 @@ async function register(server, options = {}) {
     throw new Error('Cannot find configuration for SQS')
   }
 
-  let { SQSInstance, config, handler } = options
+  let { SQSInstance, config } = options
 
   if (!SQSInstance) {
     AWS.config.update(config.aws || {})
@@ -18,13 +18,33 @@ async function register(server, options = {}) {
     SQSInstance = new AWS.SQS(config.sqs || {})
   }
 
-  if (handler) {
-    server.decorate('server', 'sqsConsumer', new Consumer(SQSInstance, config, handler))
-  }
+  server.decorate(
+    'server',
+    'sqsConsumer',
+    new Consumer(SQSInstance, config, async (err, message, done) => {
+      if (err) {
+        return server.log(['error', 'sqsConsumer', 'parsing'], err)
+      }
 
+      let notification
+      try {
+        notification = JSON.parse(message.Body)
+      } catch (e) {
+        server.log(['error', 'sqsConsumer', 'parsing'], e)
+        return
+      }
+
+      const result = await server.notificationsService.send(notification, notification.sendStrategy)
+      if (result.status === 'error') {
+        return done('error')
+      }
+
+      done()
+    })
+  )
   server.decorate('server', 'sqsProducer', new Producer(SQSInstance, config))
 
-  if (handler && options.enableConsumer === true) {
+  if (options.enableConsumer === true) {
     server.sqsConsumer.consume()
   }
 

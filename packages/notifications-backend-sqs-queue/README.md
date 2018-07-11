@@ -16,7 +16,6 @@ The configuration expected by the plugin is of the following format
 {
   SQSInstance,
   config,
-  handler,
   enableConsumer,
   enableProducer
 }
@@ -39,9 +38,7 @@ The `config` object should contain the following properties:
 }
 ```
 
-If present, the `handler` property should be a an `asyc` function. This function will be used fro the consumer to handle new messages coming from the SQS service.
-
-The `enableConsumer` property is a flag that if set to `true` will trigger the consumer to start listening to messages from SQS.
+The `enableConsumer` property is a flag that if set to `true` will trigger the consumer to start listening to messages from SQS. For each consumed message the `notificationsService.send` will be called.
 
 The `enableProducer` property is a flag that if set to `true` will trigger the producer to listen to `add` event on the `notificationsService` and will send messages to the queue for each new notification.
 
@@ -61,14 +58,19 @@ After installing the plugin, you can add the following lines to the server confi
       {
         plugin: '@nearform/notifications-backend-sqs-queue',
         options: {
-          SQSQueueURL: 'http://localhost:9832',
-          SQSQueueName: 'my-notification-queue',
-          aws: {
-            region: 'eu-west-1'
+          config: {
+            SQSQueueURL: 'http://localhost:9832',
+            SQSQueueName: 'my-notification-queue',
+            aws: {
+              region: 'eu-west-1'
+            },
+            sqs: {
+              apiVersion: '2012-11-05'
+            }
           },
-          sqs: {
-            apiVersion: '2012-11-05'
-          }
+          handler: async () => {},
+          enableConsumer: true,
+          enableProducer: true
         }
       },
       // End: Installing sqs queue plugin
