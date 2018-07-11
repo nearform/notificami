@@ -52,14 +52,13 @@ describe('producer/consumer', () => {
       done = resolve
     })
 
-    const c = new Consumer(SQS, config, (err, message) => {
+    const c = new Consumer(SQS, config, async (err, message, callback) => {
       expect(err).to.not.exist()
       expect(message).to.be.object()
-      expect(message.ResponseMetadata).to.be.exist()
-      expect(message.Messages).to.be.array()
-      expect(message.Messages.length).to.be.at.least(1)
-      expect(message.Messages[0].MessageId).to.exist()
-      expect(message.Messages[0].Body).to.exist()
+      expect(message.MessageId).to.exist()
+      expect(message.Body).to.exist()
+
+      await callback()
 
       c.stop()
       return done()

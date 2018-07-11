@@ -19,7 +19,7 @@ const notificationsHapiPlugin = {
 
     if (options.storage && options.storage.plugin) {
       try {
-        await server.register(require(options.storage.plugin), options.storage.options || {})
+        await server.register({ plugin: require(options.storage.plugin), options: options.storage.options || {} })
       } catch (e) {
         server.log(['error', 'initialize-storage', options.storage.plugin], e)
       }
@@ -45,7 +45,7 @@ const notificationsHapiPlugin = {
 
         if (value.plugin) {
           try {
-            await server.register(require(value.plugin), value.options || {})
+            await server.register({ plugin: require(value.plugin), options: value.options || {} })
           } catch (e) {
             server.log(['error', 'initialize-channel', value.plugin], e)
           }
@@ -63,7 +63,7 @@ const notificationsHapiPlugin = {
       for (let index = 0; index < options.plugins.length; index++) {
         const value = options.plugins[index]
         try {
-          await server.register(require(value.plugin), value.options || {})
+          await server.register({ plugin: require(value.plugin), options: value.options || {} })
         } catch (e) {
           server.log(['error', 'initialize-plugin', value.plugin], e)
         }

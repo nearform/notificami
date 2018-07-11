@@ -13,13 +13,13 @@ class Consumer {
   }
 
   consume() {
-    this.start(this.queue, (err, message) => {
-      this.handler(err, message)
+    this.start(this.queue, (err, message, done) => {
+      this.handler(err, message, done).catch(err => {
+        this.stopped = true
+        console.error(err)
+      })
 
       if (!this.stopped) this.consume()
-    }).catch(err => {
-      this.stopped = true
-      console.error(err)
     })
   }
 
@@ -55,16 +55,16 @@ class Consumer {
         return callback()
       }
 
-      const tasks = result.Messages.map(m => {
-        return this.SQS.deleteMessage({
-          QueueUrl: this.awsConfig.SQSQueueURL,
-          ReceiptHandle: m.ReceiptHandle
-        }).promise()
+      result.Messages.forEach(message => {
+        callback(null, message, async error => {
+          if (error) return
+
+          await this.SQS.deleteMessage({
+            QueueUrl: this.awsConfig.SQSQueueURL,
+            ReceiptHandle: message.ReceiptHandle
+          }).promise()
+        })
       })
-
-      await Promise.all(tasks)
-
-      callback(null, result)
     } catch (e) {
       return callback(e)
     }
