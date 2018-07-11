@@ -127,7 +127,7 @@ module.exports = function buildNotificationService(storage, config = {}) {
       return notification
     }
 
-    async delete({ id, username }) {
+    async delete({ id }) {
       let notification = await storage.delete({ id })
 
       this.emit('delete', notification)

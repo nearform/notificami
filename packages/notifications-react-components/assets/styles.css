@@ -13,7 +13,7 @@
 .notifications-list {
   box-sizing: border-box;
   font-family: sans-serif;
-  width: 250px;
+  width: 350px;
   display: flex;
   flex-direction: column;
   border-radius: 3px;

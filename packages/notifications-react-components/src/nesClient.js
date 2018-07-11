@@ -23,6 +23,48 @@ export function WebsocketService(client) {
   }
 
   /**
+   * Set a notification read
+   * @param {Notification} notification
+   * @returns {Promise<void>}
+   */
+  const setNotificationRead = async notification => {
+    const options = {
+      method: 'PUT',
+      path: `/notifications/${notification.id}/read`
+    }
+
+    return (await client.request(options)).payload
+  }
+
+  /**
+   * Set a notification unread
+   * @param {Notification} notification
+   * @returns {Promise<void>}
+   */
+  const setNotificationUnread = async notification => {
+    const options = {
+      method: 'PUT',
+      path: `/notifications/${notification.id}/unread`
+    }
+
+    return (await client.request(options)).payload
+  }
+
+  /**
+   * Remove a notification
+   * @param {Notification} notification
+   * @returns {Promise<void>}
+   */
+  const removeNotification = async notification => {
+    const options = {
+      method: 'DELETE',
+      path: `/notifications/${notification.id}`
+    }
+
+    await client.request(options)
+  }
+
+  /**
    * Subscribe on user notifications
    * @param user identifier
    * @param {socketEventCallback} handler
@@ -35,6 +77,9 @@ export function WebsocketService(client) {
   }
 
   return {
+    setNotificationUnread,
+    setNotificationRead,
+    removeNotification,
     getNotifications,
     onUserNotification
   }

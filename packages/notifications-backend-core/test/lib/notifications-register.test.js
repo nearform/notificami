@@ -10,6 +10,7 @@ const fakeDbStorage = {
   getByUserIdentifier: async () => {},
   get: async () => {},
   setRead: async () => {},
+  setUnread: async () => {},
   delete: async () => {},
   sentBy: async () => {}
 }

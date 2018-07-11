@@ -129,4 +129,47 @@ describe('Notifications REST API', () => {
       expect(result).to.equal({ success: true })
     })
   })
+
+  describe('PUT /notifications/{id}/read', () => {
+    test('it should set a notification to read', async () => {
+      const created = await server.notificationsService.add({
+        notify: { content: 'Some notification content for Davide' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      })
+
+      const response = await server.inject({
+        method: 'PUT',
+        url: `/notifications/${created.id}/read`
+      })
+
+      expect(response.statusCode).to.equal(200)
+      const result = JSON.parse(response.payload)
+      expect(result.readAt).not.be.null()
+    })
+  })
+
+  describe('PUT /notifications/{id}/unread', () => {
+    test('it should set a notification to unread', async () => {
+      const created = await server.notificationsService.add({
+        notify: { content: 'Some notification content for Davide' },
+        sendStrategy: 'default',
+        userIdentifier: 'davide'
+      })
+
+      await server.inject({
+        method: 'PUT',
+        url: `/notifications/${created.id}/read`
+      })
+
+      const response = await server.inject({
+        method: 'PUT',
+        url: `/notifications/${created.id}/unread`
+      })
+
+      expect(response.statusCode).to.equal(200)
+      const result = JSON.parse(response.payload)
+      expect(result.readAt).to.be.null()
+    })
+  })
 })

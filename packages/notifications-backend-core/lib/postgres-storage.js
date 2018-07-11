@@ -113,6 +113,24 @@ class PostgresStorage {
     return notification
   }
 
+  async setUnread({ id }) {
+    const sql = SQL`
+      UPDATE
+        notification
+      SET
+        read_at = null
+      WHERE
+        id = ${id}
+      RETURNING *
+    `
+    const res = await this.db.query(sql)
+    if (res.rowCount === 0) throw new Error(`Cannot find notification with id ${id}`)
+
+    let notification = this.mapNotificationFromDb(res.rows[0])
+
+    return notification
+  }
+
   async delete({ id }) {
     const sql = SQL`
       UPDATE

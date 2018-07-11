@@ -21,7 +21,7 @@ exports.plugin = {
           const results = await server.notificationsService.getByUserIdentifier(user)
           if (results.hasMore === undefined) {
             results.hasMore = false
-            if (results.length > 0) {
+            if (results.items.length > 0) {
               results.hasMore = await server.notificationsService.hasMoreByUserIdentifier(
                 user,
                 results.items[results.items.length - 1].id
