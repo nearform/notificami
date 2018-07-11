@@ -9,7 +9,7 @@ process.on('unhandledRejection', err => {
 })
 
 if (process.env.NF_NOTIFICATION_CONFIG_PATH) {
-  defaultConfig.notifications = require(process.env.NF_NOTIFICATION_CONFIG_PATH)
+  defaultConfig.notifications = require(process.env.NF_NOTIFICATION_CONFIG_PATH).notifications
 }
 
 buildServer(defaultConfig)

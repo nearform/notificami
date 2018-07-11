@@ -21,7 +21,7 @@ const config = {
   }
 }
 
-const DynamoDbStorage = require('../../lib')
+const DynamoDbStorage = require('../../lib/storage')
 
 describe('Notification', () => {
   const notificationList = []
