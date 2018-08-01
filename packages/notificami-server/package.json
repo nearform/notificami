@@ -1,0 +1,31 @@
+{
+  "name": "@nearform/notificami-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "depcheck": "../../node_modules/depcheck/bin/depcheck --ignores=@nearform/notificami-channel-websocket-nes,@nearform/notificami-backend-sqs-queue,@nearform/notificami-storage-dynamodb",
+    "test": "npm run pg:test:init && NODE_ENV=test lab -c --coverage-exclude config test -I __core-js_shared__",
+    "start": "node index.js",
+    "start:aws": "NF_NOTIFICATION_CONFIG_PATH=./config/aws-config.js DDB_STACK_PATH=\"../../../aws-deploy/config/stack.json\" node index.js ",
+    "pg:test:init": "NODE_ENV=test node ../notificami-backend-core/database/init.js && NODE_ENV=test node ../notificami-backend-core/database/migrate.js max",
+    "pg:init": "node ../notificami-backend-core/database/init.js && node ../notificami-backend-core/database/migrate.js max"
+  },
+  "contributors": [
+    "Filippo De Santis (https://github.com/p16)",
+    "Davide Fiorello (https://github.com/codeflyer)"
+  ],
+  "author": "nearForm Ltd",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "hapi": "^17.5.2",
+    "@nearform/notificami-channel-websocket-nes": "^0.0.1",
+    "@nearform/notificami-backend-hapi-plugin": "^0.0.1",
+    "@nearform/notificami-backend-sqs-queue": "^0.0.1",
+    "@nearform/notificami-storage-dynamodb": "^0.0.1"
+  },
+  "devDependencies": {
+    "code": "^5.2.0",
+    "lab": "^15.5.0"
+  }
+}
