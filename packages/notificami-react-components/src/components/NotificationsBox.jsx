@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { NotificationsWrapper } from './NotificationsProvider'
+import { NotificationsWrapper } from './NotificamiProvider'
 
 const NotificationsBoxBase = ({ notifications, active, toggleList, hasMore }) => (
   <div className="notifications-box" onClick={toggleList}>

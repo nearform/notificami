@@ -1,8 +1,8 @@
 import React from 'react'
 import { mount } from 'enzyme'
 
-import { NotificationsProvider } from '../src/components/NotificationsProvider'
-import { NotificationsWidget } from '../src/components/NotificationsWidget'
+import { NotificamiProvider } from '../src/components/NotificamiProvider'
+import { NotificamiWidget } from '../src/components/NotificamiWidget'
 import { NotificationsBox } from '../src/components/NotificationsBox'
 import { NotificationsList, NotificationsListBase } from '../src/components/NotificationsList'
 
@@ -50,16 +50,16 @@ const mockWebSocketService = ({
   }
 }
 
-describe('NotificationsWidget', () => {
+describe('NotificamiWidget', () => {
   let wrapper
   let service
 
   beforeEach(() => {
     service = mockWebSocketService()
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test" service={service}>
-        <NotificationsWidget />
-      </NotificationsProvider>
+      <NotificamiProvider userIdentifier="test" service={service}>
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
   })
 
@@ -113,9 +113,9 @@ describe('NotificationsWidget', () => {
     setNotificationReadMock.mockReturnValueOnce({ id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: now })
     service = mockWebSocketService({ setNotificationRead: setNotificationReadMock })
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test" service={service}>
-        <NotificationsWidget />
-      </NotificationsProvider>
+      <NotificamiProvider userIdentifier="test" service={service}>
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
     await delay()
 
@@ -141,9 +141,9 @@ describe('NotificationsWidget', () => {
     setNotificationUnreadMock.mockReturnValueOnce({ id: 1, notify: { content: 'hello', url: 'someurl' }, readAt: null })
     service = mockWebSocketService({ setNotificationUnread: setNotificationUnreadMock })
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test" service={service}>
-        <NotificationsWidget />
-      </NotificationsProvider>
+      <NotificamiProvider userIdentifier="test" service={service}>
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
     await delay()
 
@@ -165,13 +165,9 @@ describe('NotificationsWidget', () => {
 
   test('If a NotificationItem is passed is used intead of the default', async () => {
     wrapper = mount(
-      <NotificationsProvider
-        userIdentifier="test"
-        service={service}
-        NotificationItem={() => <div className="alt-item" />}
-      >
-        <NotificationsWidget />
-      </NotificationsProvider>
+      <NotificamiProvider userIdentifier="test" service={service} NotificationItem={() => <div className="alt-item" />}>
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
     await delay()
 
@@ -186,9 +182,9 @@ describe('NotificationsWidget', () => {
 
   test('without a service the list should show the service disabled message', async () => {
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test">
-        <NotificationsWidget />
-      </NotificationsProvider>
+      <NotificamiProvider userIdentifier="test">
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
     await delay()
 

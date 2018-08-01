@@ -3,11 +3,11 @@ import { action } from '@storybook/addon-actions'
 import React from 'react'
 
 import { WebsocketService, buildWebsocketClient } from '../src/nesClient'
-import { NotificationsProvider } from '../src/components/NotificationsProvider'
-import { NotificationsWidget } from '../src/components/NotificationsWidget'
+import { NotificamiProvider } from '../src/components/NotificamiProvider'
+import { NotificamiWidget } from '../src/components/NotificamiWidget'
 import { NotificationsList } from '../src/components/NotificationsList'
 
-export class Notifications extends React.Component {
+export class Notificami extends React.Component {
   constructor(props) {
     super(props)
 
@@ -31,17 +31,17 @@ export class Notifications extends React.Component {
 
   render() {
     return (
-      <NotificationsProvider userIdentifier={this.props.user} service={this.state.service}>
+      <NotificamiProvider userIdentifier={this.props.user} service={this.state.service}>
         <h1>This is a test panel for the user {this.props.user}</h1>
-        <NotificationsWidget />
-      </NotificationsProvider>
+        <NotificamiWidget />
+      </NotificamiProvider>
     )
   }
 }
 
-storiesOf('Notifications', module)
-  .add('Default user Davide', () => <Notifications user="davide">Start from here</Notifications>)
-  .add('Default user Filippo', () => <Notifications user="filippo">Start from here</Notifications>)
+storiesOf('Notificami', module)
+  .add('Default user Davide', () => <Notificami user="davide">Start from here</Notificami>)
+  .add('Default user Filippo', () => <Notificami user="filippo">Start from here</Notificami>)
   .add('NotificationsList not active', () => <NotificationsList />)
   .add('NotificationsList with items and has more', () => (
     <NotificationsList

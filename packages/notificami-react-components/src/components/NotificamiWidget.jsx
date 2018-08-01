@@ -1,10 +1,10 @@
 import React from 'react'
-import { NotificationsWrapper } from './NotificationsProvider'
+import { NotificationsWrapper } from './NotificamiProvider'
 import { NotificationsBox } from './NotificationsBox'
 import { NotificationsList } from './NotificationsList'
 import PropTypes from 'prop-types'
 
-const NotificationsWidgetBase = ({ showList }) => {
+const NotificamiWidgetBase = ({ showList }) => {
   return (
     <div className="notification-widget">
       <NotificationsBox />
@@ -13,8 +13,8 @@ const NotificationsWidgetBase = ({ showList }) => {
   )
 }
 
-NotificationsWidgetBase.propTypes = {
+NotificamiWidgetBase.propTypes = {
   showList: PropTypes.bool
 }
 
-export const NotificationsWidget = NotificationsWrapper(NotificationsWidgetBase)
+export const NotificamiWidget = NotificationsWrapper(NotificamiWidgetBase)

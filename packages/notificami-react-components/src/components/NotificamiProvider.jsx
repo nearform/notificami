@@ -5,7 +5,7 @@ import { childrenPropInterface } from './propInterfaces'
 
 export const NotificationsContext = React.createContext('notifications-provider')
 
-export class NotificationsProvider extends React.Component {
+export class NotificamiProvider extends React.Component {
   constructor(props) {
     super(props)
 
@@ -212,7 +212,7 @@ export class NotificationsProvider extends React.Component {
   }
 }
 
-NotificationsProvider.propTypes = {
+NotificamiProvider.propTypes = {
   userIdentifier: PropTypes.string,
   NotificationItem: PropTypes.func,
   service: PropTypes.func
@@ -230,9 +230,9 @@ export const NotificationsWrapper = Component => {
   }
 }
 
-NotificationsProvider.displayName = 'NotificationsProvider'
+NotificamiProvider.displayName = 'NotificamiProvider'
 
-NotificationsProvider.propTypes = {
+NotificamiProvider.propTypes = {
   userIdentifier: PropTypes.string.isRequired,
   service: PropTypes.object,
   children: childrenPropInterface,

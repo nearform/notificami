@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import onClickOutside from 'react-onclickoutside'
 
-import { NotificationsWrapper } from './NotificationsProvider'
+import { NotificationsWrapper } from './NotificamiProvider'
 
 class DefaultNotificationItem extends React.Component {
   render() {

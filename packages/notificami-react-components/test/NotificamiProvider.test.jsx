@@ -1,10 +1,6 @@
 import { mount } from 'enzyme'
 import React from 'react'
-import {
-  NotificationsProvider,
-  NotificationsWrapper,
-  NotificationsContext
-} from '../src/components/NotificationsProvider'
+import { NotificamiProvider, NotificationsWrapper, NotificationsContext } from '../src/components/NotificamiProvider'
 
 export async function delay(timeout = 10) {
   return new Promise(resolve => setTimeout(resolve, timeout))
@@ -54,16 +50,16 @@ const mockWebSocketService = ({
   }
 }
 
-describe('NotificationsProvider', () => {
+describe('NotificamiProvider', () => {
   let wrapper
   let service
 
   beforeEach(() => {
     service = mockWebSocketService()
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test" service={service}>
+      <NotificamiProvider userIdentifier="test" service={service}>
         <div />
-      </NotificationsProvider>
+      </NotificamiProvider>
     )
   })
 
@@ -127,9 +123,9 @@ describe('NotificationsProvider', () => {
 
     test('When passing no servie the status should be inactive', async () => {
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test">
+        <NotificamiProvider userIdentifier="test">
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
 
       await delay()
@@ -174,9 +170,9 @@ describe('NotificationsProvider', () => {
 
       const onErrorMock = jest.fn()
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test" service={service} onError={onErrorMock}>
+        <NotificamiProvider userIdentifier="test" service={service} onError={onErrorMock}>
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
 
       await delay()
@@ -200,9 +196,9 @@ describe('NotificationsProvider', () => {
     test('when there is an error subscribing the active flag is false', async () => {
       service = mockWebSocketService({ subscriptionError: true })
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificamiProvider userIdentifier="test" service={service}>
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
       await delay()
 
@@ -230,9 +226,9 @@ describe('NotificationsProvider', () => {
   describe('actions', () => {
     test('toggleList', () => {
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificamiProvider userIdentifier="test" service={service}>
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
 
       expect(wrapper.state().showList).toEqual(false)
@@ -242,9 +238,9 @@ describe('NotificationsProvider', () => {
 
     test('closeList', () => {
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificamiProvider userIdentifier="test" service={service}>
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
 
       expect(wrapper.state().showList).toEqual(false)
@@ -258,9 +254,9 @@ describe('NotificationsProvider', () => {
       service = mockWebSocketService({ getNotifications: getNotificationsMock })
 
       wrapper = mount(
-        <NotificationsProvider userIdentifier="test" service={service}>
+        <NotificamiProvider userIdentifier="test" service={service}>
           <div />
-        </NotificationsProvider>
+        </NotificamiProvider>
       )
 
       getNotificationsMock.mockReturnValueOnce({
@@ -311,9 +307,9 @@ describe('NotificationsProvider', () => {
 
     const onErrorMock = jest.fn()
     wrapper = mount(
-      <NotificationsProvider userIdentifier="test" service={service} onError={onErrorMock}>
+      <NotificamiProvider userIdentifier="test" service={service} onError={onErrorMock}>
         <div />
-      </NotificationsProvider>
+      </NotificamiProvider>
     )
 
     const error = new Error('some error')
