@@ -1,8 +1,19 @@
 {
   "name": "@nearform/notificami-backend-test-queue",
   "version": "0.0.1",
-  "description": "",
   "main": "src/index.js",
+  "description": "notificami-backend-test-queue",
+  "homepage": "https://github.com/nearform/notificami#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nearform/notificami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nearform/notificami/issues"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "scripts": {
     "coverage": "NODE_ENV=test lab -c -r lcov test",
     "depcheck": "../../node_modules/depcheck/bin/depcheck",

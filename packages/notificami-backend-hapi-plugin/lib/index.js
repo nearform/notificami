@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const { buildNotificationsService, buildPool, config, PostgresStorage } = require('../../notificami-backend-core')
+const { buildNotificationsService, buildPool, config, PostgresStorage } = require('@nearform/notificami-backend-core')
 
 const schema = Joi.object({
   pg: Joi.object().optional(),

@@ -1,8 +1,19 @@
 {
   "name": "@nearform/notificami-backend-core",
   "version": "0.0.1",
-  "description": "",
   "main": "lib/index.js",
+  "description": "notificami-backend-core",
+  "homepage": "https://github.com/nearform/notificami#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nearform/notificami.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nearform/notificami/issues"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "scripts": {
     "coverage": "NODE_ENV=test lab -c --coverage-exclude config -r lcov test",
     "depcheck": "../../node_modules/depcheck/bin/depcheck",
