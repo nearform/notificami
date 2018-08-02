@@ -1,5 +1,5 @@
 {
-  "name": "@nearform/notificami-backend-test-queue",
+  "name": "@nearform/notificami-backend-local-queue",
   "version": "0.0.1",
   "main": "src/index.js",
   "description": "notificami-backend-test-queue",
