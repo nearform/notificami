@@ -1,9 +1,9 @@
 'use strict'
 
-const { TestQueue } = require('./test-queue')
+const { LocalQueue } = require('./local-queue')
 
 async function register(server, options = {}) {
-  const queue = new TestQueue()
+  const queue = new LocalQueue()
   queue.consume('notification-queue', async notification => {
     try {
       await server.notificationsService.send(notification, notification.sendStrategy)

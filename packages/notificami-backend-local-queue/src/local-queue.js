@@ -1,6 +1,6 @@
 'use strict'
 
-class TestQueue {
+class LocalQueue {
   constructor() {
     this.queues = []
   }
@@ -25,4 +25,4 @@ class TestQueue {
   }
 }
 
-module.exports = { TestQueue }
+module.exports = { LocalQueue }
