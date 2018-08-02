@@ -6,7 +6,7 @@
   "scripts": {
     "coverage": "NODE_ENV=test lab -c -r lcov test",
     "pg:test:init": "NODE_ENV=test node ../notificami-backend-core/database/init.js && NODE_ENV=test node ../notificami-backend-core/database/migrate.js max",
-    "depcheck": "../../node_modules/depcheck/bin/depcheck --ignores=@nearform/notificami-channel-websocket-nes,@nearform/notificami-backend-test-queue,@nearform/notificami-backend-sqs-queue,@nearform/notificami-storage-dynamodb",
+    "depcheck": "../../node_modules/depcheck/bin/depcheck --ignores=@nearform/notificami-channel-websocket-nes,@nearform/notificami-backend-local-queue,@nearform/notificami-backend-sqs-queue,@nearform/notificami-storage-dynamodb",
     "test": "NODE_ENV=test lab -c test -I __core-js_shared__"
   },
   "contributors": [
@@ -26,7 +26,7 @@
     "code": "^5.2.0",
     "hapi": "^17.5.2",
     "lab": "^15.4.5",
-    "@nearform/notificami-backend-test-queue": "^0.0.1",
+    "@nearform/notificami-backend-local-queue": "^0.0.1",
     "@nearform/notificami-channel-websocket-nes": "^0.0.1",
     "sinon": "^6.0.1"
   }

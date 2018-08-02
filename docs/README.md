@@ -23,7 +23,7 @@ The plugin system is the Hapijs plugin system, so you can actually install other
 
 The base block of all this is the `NotificationsService` class.
 
-This class provides the following API (an in-depth explanation is given [here](#))
+This class provides the following API (an in-depth explanation is given [here](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-core#notification-service))
 
 ```javascript
 class NotificationsService extends EventEmitter {
@@ -91,6 +91,16 @@ To build an instance of `NotificationsService` a `storage` object is needed. `st
 
 If you choose to add your own storage method remember the above functions need to be exposed. Moreover, we go by the convention that if you add your own storage it will be found in `server.storageService`.
 
+## Architecture
+The platform can be used with a single server that acts as a producer consumer or in a more structured way separating the producer and the consumer and using an external queue service to manage the events.
+
+***The single server architecture***
+![Single server](images/notificami-single.png)
+
+***The multiple server architecture***
+![Single server](images/notificami-multi.png)
+
+
 ## REST API
 
 |Path|Method|Summary|
@@ -101,6 +111,7 @@ If you choose to add your own storage method remember the above functions need t
 |`/notifications/{id}/unread`|PUT|Set notification as unread|
 |`/notifications/{id}`|DELETE|Delete notification|
 
+an in-depth explanation is given [here](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-hapi-plugin#api)
 
 ## NEXT STEPS
 
@@ -111,3 +122,7 @@ If you choose to add your own storage method remember the above functions need t
 - [@nearform/notificami-backend-core](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-core)
 - [@nearform/notificami-backend-hapi-plugin](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-hapi-plugin)
 - [@nearform/notificami-server](https://github.com/nearform/notificami/tree/master/packages/notificami-server)
+- [@nearform/notificami-local-queue](https://github.com/nearform/notificami/tree/master/packages/notificami-local-queue)
+- [@nearform/notificami-sqs-queue](https://github.com/nearform/notificami/tree/master/packages/notificami-sqs-queue)
+- [@nearform/notificami-storage-dynamodb](https://github.com/nearform/notificami/tree/master/packages/notificami-storage-dynamodb)
+- [@nearform/notificami-react-components](https://github.com/nearform/notificami/tree/master/packages/notificami-react-components)

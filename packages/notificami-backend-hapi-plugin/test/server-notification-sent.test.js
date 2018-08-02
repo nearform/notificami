@@ -17,7 +17,7 @@ describe('Notifications REST API', () => {
       host: '127.0.0.1',
       port: 8281,
       pluginOptions: {
-        plugins: [{ plugin: '@nearform/notificami-backend-test-queue' }],
+        plugins: [{ plugin: '@nearform/notificami-backend-local-queue' }],
         channels: {
           email: {
             ses: {

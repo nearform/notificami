@@ -14,7 +14,7 @@ npm install @nearform/notificami-backend-core
 
 ## Postgres Model
 
-Wehn using the postgres storage, a notification is an obejct with the following properties
+When using the postgres storage, a notification is an object with the following properties
 
 ```
 Notification {
@@ -81,7 +81,7 @@ Each notifiation has a `sendStrategy` property. This property is checked against
 
 By default we add [these strategies](https://github.com/nearform/notificami/blob/master/packages/notificami-backend-core/config/index.js#L26-L31) if none is provided.
 
-### `NotificationsService` api
+### <a name="notification-service"></a> `NotificationsService` api
 
 `NotificationsService` will expose the following api
 

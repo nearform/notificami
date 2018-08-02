@@ -1,11 +1,11 @@
-# @nearform/@nearform/notificami-backend-sqs-queue
+# @nearform/notificami-backend-sqs-queue
 
 This plugin will let you connect to the AWS SQS service.
 
 ## Install
 
 ```
-npm install @nearform/@nearform/notificami-backend-sqs-queue
+npm install @nearform/notificami-backend-sqs-queue
 ```
 
 ## Configuration
@@ -56,7 +56,7 @@ After installing the plugin, you can add the following lines to the server confi
 
       // Start: declaring sqs queue plugin
       {
-        plugin: '@nearform/@nearform/notificami-backend-sqs-queue',
+        plugin: '@nearform/notificami-backend-sqs-queue',
         options: {
           config: {
             SQSQueueURL: 'http://localhost:9832',
