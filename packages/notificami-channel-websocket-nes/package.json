@@ -1,0 +1,14 @@
+{
+  "name": "@nearform/notificami-channel-websocket-nes",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "depcheck": "../../node_modules/depcheck/bin/depcheck"
+  },
+  "author": "nearForm Ltd",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "nes": "^9.0.0"
+  }
+}
