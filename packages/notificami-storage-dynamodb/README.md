@@ -9,8 +9,8 @@ npm install --save notifications-storage-dynamodb
 ```
 
 To use the plugin add the `storage` entry in `config`
-```
 
+```
 const config = {
   notifications: {
     channels: {
@@ -35,6 +35,7 @@ const config = {
 
 ### Dynamodb table
 The dynamodb table is buld using the following configuration
+
 ```
 {
   "AttributeDefinitions": [
