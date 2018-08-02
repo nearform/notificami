@@ -123,6 +123,7 @@ an in-depth explanation is given [here](https://github.com/nearform/notificami/t
 - [@nearform/notificami-backend-hapi-plugin](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-hapi-plugin)
 - [@nearform/notificami-server](https://github.com/nearform/notificami/tree/master/packages/notificami-server)
 - [@nearform/notificami-local-queue](https://github.com/nearform/notificami/tree/master/packages/notificami-local-queue)
+- [@nearform/notificami-channel-websocket-nes](https://github.com/nearform/notificami/tree/master/packages/notificami-channel-websocket-nes)
 - [@nearform/notificami-sqs-queue](https://github.com/nearform/notificami/tree/master/packages/notificami-sqs-queue)
 - [@nearform/notificami-storage-dynamodb](https://github.com/nearform/notificami/tree/master/packages/notificami-storage-dynamodb)
 - [@nearform/notificami-react-components](https://github.com/nearform/notificami/tree/master/packages/notificami-react-components)

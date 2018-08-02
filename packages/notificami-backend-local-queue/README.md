@@ -14,7 +14,7 @@ To use the local plugin is just required to add it in the configuration
 
 ```
 {
-  plugins: [{ plugin: 'notifications-backend-local-queue' }],
+  plugins: [{ plugin: '@nearform/notificami-backend-local-queue' }],
   storage: {
     ...
   },

@@ -1,8 +1,8 @@
-# notifications-react-component
+# @nearform/notificami-react-component
 
-`notifications-react-component` is a ready to use React component that allow to add a notification widget in your page.
+`@nearform/notificami-react-component` is a ready to use React component that allow to add a notification widget in your page.
 
-It uses the [notifications-server] package as backend.
+It uses the [@nearform/notificami-server] package as backend.
 
 The Components created use the new React Context API (> 16).
 
@@ -26,7 +26,7 @@ The `notificami` widget adds a clickable Badge with the numbers of notifications
 The widget should be embedded in the `NotificamiProvider` that manage the connection with the server and pass the context to the widget.
 
 ```
-import { WebsocketService, buildWebsocketClient, NotificamiProvider, NotificamiWidget } from 'notifications-react-component'
+import { WebsocketService, buildWebsocketClient, NotificamiProvider, NotificamiWidget } from '@nearform/notificami-react-component'
 
 const client = buildWebsocketClient('ws://127.0.0.1:8482')
 client.connect()

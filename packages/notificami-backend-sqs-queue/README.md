@@ -81,3 +81,9 @@ After installing the plugin, you can add the following lines to the server confi
   ...
 }
 ```
+
+## License
+
+Copyright nearForm Ltd 2018. Licensed under [Apache 2.0 license][license].
+
+[license]: ./LICENSE.md

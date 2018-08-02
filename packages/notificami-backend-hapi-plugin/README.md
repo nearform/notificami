@@ -12,13 +12,13 @@ npm install @nearform/notificami-backend-hapi-plugin
 
 ## Configuration
 
-When initializing the `notifications-backend-hapi-plugin`, it will accept a options object of the followig format
+When initializing the `@nearform/notificami-backend-hapi-plugin`, it will accept a options object of the followig format
 
 ```
 {
-  plugins: [{ plugin: 'notifications-backend-local-queue' }],
+  plugins: [{ plugin: '@nearform/notificami-backend-local-queue' }],
   storage: {
-    plugin: 'notifications-storage-dynamodb',
+    plugin: '@nearform/notificami-storage-dynamodb',
     options: {
      TableName: 'notifications',
      ApplicationUserAccessKey: 'AKIAJVUSIUSERACCESSKEY',
@@ -36,7 +36,7 @@ When initializing the `notifications-backend-hapi-plugin`, it will accept a opti
       sendgrid: async (notification) => {}
     },
     socket: {
-      plugin: 'notifications-channel-websocket-nes'
+      plugin: '@nearform/notificami-channel-websocket-nes'
     }
   },
   strategies: {
@@ -52,11 +52,11 @@ The `plugins` option should contain an array of plugins to be used. We will inst
 
 The `storage` option should contain an obect with definition of the storage used. If no storage is defined the default `postgres` storage is used. An example on how to use and configure the storage can be found in the [@nearform/notificami-storage-dynamodb](https://github.com/nearform/notificami/tree/master/packages/notificami-storage-dynamodb) module.
 
-The `channels` option should be an object declaring which are the channels to be registered on `notif.me sdk`, they can be either an object (as `email.ses`) or an async function (as `email.sendgrid`) or a module to be required (as `socket`) that [will add its own channels/providers](#notifications-channel-websocket-nes).
+The `channels` option should be an object declaring which are the channels to be registered on `notif.me sdk`, they can be either an object (as `email.ses`) or an async function (as `email.sendgrid`) or a module to be required (as `socket`) that [will add its own channels/providers](#@nearform/notificami-channel-websocket-nes).
 
 To have a list of already implemented provider you can refer to [the providers list from `notif.me sdk`](https://github.com/notifme/notifme-sdk#2-providers)
 
-The `strategies` option may define different strategies to use when delivering notifications. Each strategy should contain a list of channels. If the strategy in the [notification request](#notifications-backend-hapi-plugin) matches one of the strategies we definend, its channels will be used to send the notification. We will loop on the channels and stop at the first one that its successful in sending the notification.
+The `strategies` option may define different strategies to use when delivering notifications. Each strategy should contain a list of channels. If the strategy in the [notification request](#@nearform/notificami-backend-hapi-plugin) matches one of the strategies we definend, its channels will be used to send the notification. We will loop on the channels and stop at the first one that its successful in sending the notification.
 
 
 ## <a name="api"></a> HTTP APIs
