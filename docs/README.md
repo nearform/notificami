@@ -27,12 +27,14 @@ This class provides the following API (an in-depth explanation is given [here](#
 
 ```javascript
 class NotificationsService extends EventEmitter {
+  // Main functions
   register(channel, name, handler) {}
 
   async send(notification, strategy) {}
 
   get config() {}
 
+  // Proxy methods to the storage service
   async add({ notify, sendStrategy, userIdentifier }) {}
 
   async getByUserIdentifier(userIdentifier, offsetId, limit) {}
@@ -60,6 +62,8 @@ As you can see `NotificationsService` is an event emitter. The events it emits a
 - `unread`: when a notification is marked as unread
 - `delete`: when a notification is deleted
 - `sent_by`: when a notification is confirmed to have been sent by a certain
+
+The notification service will also proxy all the storage interface functions.
 
 An instance of this class will be provided by the `server` object (`server.notificationsService`) and you can use it to register your own notification channels (more info [here](#)) or manage notifications (sending, marking as read/unread).
 
@@ -101,3 +105,9 @@ If you choose to add your own storage method remember the above functions need t
 ## NEXT STEPS
 
 ...
+
+## Technical references
+
+- [@nearform/notificami-backend-core](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-core)
+- [@nearform/notificami-backend-hapi-plugin](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-hapi-plugin)
+- [@nearform/notificami-server](https://github.com/nearform/notificami/tree/master/packages/notificami-server)

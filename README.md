@@ -297,3 +297,9 @@ exports.plugin = {
 You can use the same pattern to add your own channels and implementations and then change the sending strategy via [custom configuration](#notification-server).
 
 You can find the while code [here](https://github.com/nearform/notifications/tree/master/packages/notifications-channel-websocket-nes)
+
+## License
+
+Copyright nearForm Ltd 2018. Licensed under [Apache 2.0 license][license].
+
+[license]: ./LICENSE.md
