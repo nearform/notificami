@@ -160,8 +160,6 @@ NF_NOTIFICATIONS_PGPORT
 
 ## Development
 
-## Docker
-
 ### Initializing the db
 
 To initialize the db you can run:
