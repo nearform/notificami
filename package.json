@@ -80,5 +80,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "docsify": "^4.7.0"
+  }
 }
