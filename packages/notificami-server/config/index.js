@@ -9,7 +9,7 @@ const config = {
         plugin: '@nearform/notificami-channel-websocket-nes'
       }
     },
-    plugins: [{ plugin: '@nearform/notificami-backend-test-queue' }],
+    plugins: [{ plugin: '@nearform/notificami-backend-local-queue' }],
     strategies: {
       default: {
         name: 'default-to-sockets',

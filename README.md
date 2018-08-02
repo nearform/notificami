@@ -1,4 +1,10 @@
-# Notifications
+# Notificami
+
+Notificami is a notifications system that aims to send notifications through a very broad set of medium. The idea behind this project is to provided a simple way of sending notifications and configure their delivery.
+
+The system is built with a plugin model in mind. You can define which storage to use (default is postgres), which notification "channels" you want to use and installing your own plugin to make the notification system work with AWS , Azure or GCloud.
+
+Check the full docs [here](https://nearform.github.io/notificami/#/)
 
 ## Requirements
 
@@ -11,10 +17,10 @@
 npm install
 ```
 
-## Run postgres on docker
+## Run postgres and dynamoDb on docker
 
 ```
-docker-compose up postgres
+docker-compose up postgres dynamodb
 ```
 
 ## Run tests
@@ -80,123 +86,6 @@ The `config` object will be used instead of the default configuration and should
   }
 }
 ```
-
-#### Notification service
-
-The object returned by `buildNotificationService` will expose the following functions
-
-**`register(channel, name, handler)`**
-
-The `register` function will accept 3 parameters:
-
-- `channel`: a string
-- `name`: a string
-- `handler`: an object or a function
-
-Note: when the handler is an object it should be one of the [notif.me providers](https://github.com/notifme/notifme-sdk#2-providers). If it is a function it will be used as a [notif.me sdk custom provider](https://github.com/notifme/notifme-sdk#2-providers).
-
-**`async send(notification, strategy)`**
-
-The `send` function will accept 2 parameters:
-
-- `notification`: an object representing the notification
-- `strategy`: a string that is the strategy to use to deliver this notification (it should be one of the strategies defined in the config above)
-
-**`config`**
-
-The `config` property will return the configuration built by calling `register`. This configurarion maps to the [notif.me sdk](https://github.com/notifme/notifme-sdk) configuration with a limitation: the user cannot set the `multiProviderStrategy` option. As of now, that is fixed to `fallback`.
-
-
-The notification service will also proxy all the storage interface functions and will emit events for adding (event `add`), setting as read (event `read`), deleting (event `delete`) and setting the notification "sent by" channel (event `sent_by`).
-
-### notifications-backend-hapi-plugin
-
-This plugin will add a set of HTTP REST endpoints to a hapi server.
-
-**GET /users/{username}/notifications/{offsetId?}**
-
-This endpoint will return the list of notifications for a user from the newest to the oldest starting from the notification with ID=`offestId`. If `offsetId`is not defined, the newest notifications are returned.
-
-Return structure:
-```
-{
-  items: [...],
-  hasMore: true|false
-}
-```
-
-**POST /notifications**
-
-This endpoint will create a new notification and trigger the notification process through a strategy.
-
-The request should be something like the followig:
-
-```
-POST /notifications
-
-{
-  notify: { /* free structure */ },
-  userIdentifier: 'xyz',
-  sendStrategy: 'default' // this is optional
-}
-```
-
-and the response will be (if using our postgres storage implementation)
-
-```
-{
-  notify: { /* what has been passed in */ },
-  readAt: null,
-  deletedAt: null,
-  sendStrategy: 'default',
-  sentBy: [],
-  userIdentifier: 'xyz'
-}
-```
-
-**DELETE /notifications/{id}**
-
-This endpoint will delete a notification.
-
-#### Configuration
-
-When initializing the `notifications-backend-hapi-plugin`, it will accept a options object of the followig format
-
-```
-{
-  plugins: [{ plugin: 'notifications-backend-test-queue' }],
-  channels: {
-    email: {
-      ses: {
-        region: 'xxxxx',
-        accessKeyId: 'xxxxx',
-        secretAccessKey: 'xxxxx'
-      },
-      sendgrid: async (notification) => {}
-    },
-    socket: {
-      plugin: 'notifications-channel-websocket-nes'
-    }
-  },
-  strategies: {
-    default: {
-      name: 'default-to-sockets',
-      channels: ['socket', 'email']
-    }
-  }
-}
-```
-
-The `plugins` option should contain an array of plugins to be used. We will install each plugin as an hapi plugin.
-
-If you want to change the storage system (by default it's postgres) you need to set the `server.storageService` variable. If that is present we will use that as the storage to be passed to the [`buildNotificationService`](#notifications-backend-core) function.
-
-The `channels` option should be an object declaring which are the channels to be registered on `notif.me sdk`, they can be either an object (as `email.ses`) or an async function (as `email.sendgrid`) or a module to be required (as `socket`) that [will add its own channels/providers](#notifications-channel-websocket-nes).
-
-To have a list of already implemented provider you can refer to [the providers list from `notif.me sdk`](https://github.com/notifme/notifme-sdk#2-providers)
-
-The `strategies` option may define different strategies to use when delivering notifications. Each strategy should contain a list of channels. If the strategy in the [notification request](#notifications-backend-hapi-plugin) matches one of the strategies we definend, its channels will be used to send the notification. We will loop on the channels and stop at the first one that its successful in sending the notification.
-
 ### notification-server
 
 This module contains an already working server that by default will store notifications in postgres and will use a example queue system (that is not suitable for prod).
@@ -297,3 +186,9 @@ exports.plugin = {
 You can use the same pattern to add your own channels and implementations and then change the sending strategy via [custom configuration](#notification-server).
 
 You can find the while code [here](https://github.com/nearform/notifications/tree/master/packages/notifications-channel-websocket-nes)
+
+## License
+
+Copyright nearForm Ltd 2018. Licensed under [Apache 2.0 license][license].
+
+[license]: ./LICENSE.md
