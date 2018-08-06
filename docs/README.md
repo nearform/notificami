@@ -1,14 +1,14 @@
 # Notificami - open source notification system
 
-Notificami is a notifications system that aims to send notifications through a very broad set of medium. The idea behind this project is to provided a simple way of sending notifications and configure their delivery.
+Notificami is a notifications system that aims to send notifications through a very broad range of mediums. The idea behind this project is to provided a simple way of sending notifications and configure their delivery.
 
-The system is built with a plugin model in mind. You can define which storage to use (default is postgres), which notification "channels" you want to use and installing your own plugin to make the notification system work with AWS , Azure or GCloud.
+The system is built with a plugin model in mind. You can define which storage to use (default is postgres), which notification "channels" you want to use and install your own plugin to make the notification system work with AWS, Azure or GCloud.
 
 ## Background
 
-If our applications have authenticated users, we all have some notifications to send (ie: registration emails). Sometimes we want to also sent push notifications, sms or messages through websockets. In those cases we need to build our own solutions.
+If our applications have authenticated users, we all have some notifications to send (i.e. registration emails). Sometimes we want to also sent push notifications, SMS or messages through websockets. In those cases we need to build our own solutions.
 
-Notificami allows you to reach a wide range of notification services (emails, sms, webpush, websockets, etc...) with minimal configuration and at the same time gives you the ability to add your own logic into it.
+Notificami allows you to reach a wide range of notification services (emails, SMS, webpush, websockets, etc...) with minimal configuration and at the same time gives you the ability to add your own logic into it.
 
 ## CORE CONCEPTS
 
@@ -55,7 +55,7 @@ class NotificationsService extends EventEmitter {
 }
 ```
 
-As you can see `NotificationsService` is an event emitter. The events it emits are
+As you can see `NotificationsService` is an event emitter. The events it emits are:
 
 - `add`: when a notification as been successfully stored
 - `read`: when a notification is marked as read
@@ -67,7 +67,7 @@ The notification service will also proxy all the storage interface functions.
 
 An instance of this class will be provided by the `server` object (`server.notificationsService`) and you can use it to register your own notification channels (more info [here](#)) or manage notifications (sending, marking as read/unread).
 
-To build an instance of `NotificationsService` a `storage` object is needed. `storage` needs to have the following api
+To build an instance of `NotificationsService` a `storage` object is needed. `storage` needs to have the following API:
 
 ```
 {
@@ -89,7 +89,7 @@ To build an instance of `NotificationsService` a `storage` object is needed. `st
 }
 ```
 
-If you choose to add your own storage method remember the above functions need to be exposed. Moreover, we go by the convention that if you add your own storage it will be found in `server.storageService`.
+If you choose to add your own storage method, remember the above functions need to be exposed. Moreover, we assume your own storage will be found in `server.storageService`.
 
 ## Architecture
 The platform can be used with a single server that acts as a producer consumer or in a more structured way separating the producer and the consumer and using an external queue service to manage the events.
@@ -105,7 +105,7 @@ The platform can be used with a single server that acts as a producer consumer o
 
 |Path|Method|Summary|
 |----|------|-------|
-|`/users/{username}/notifications/{offsetId?}`|GET|List notification for a specific user|
+|`/users/{username}/notifications/{offsetId?}`|GET|List notifications for a specific user|
 |`/notifications`|POST|Publish a new notification|
 |`/notifications/{id}/read`|PUT|Set notification as read|
 |`/notifications/{id}/unread`|PUT|Set notification as unread|
