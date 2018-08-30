@@ -1,6 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
+const { name, version } = require('../package.json')
 const { buildNotificationsService, buildPool, config, PostgresStorage } = require('@nearform/notificami-backend-core')
 
 const schema = Joi.object({
@@ -9,8 +10,8 @@ const schema = Joi.object({
 })
 
 const notificationsHapiPlugin = {
-  name: '@nearform/notificami-hapi-plugin',
-  version: '1.0.0',
+  name,
+  version,
   register: async function(server, options = {}) {
     const result = Joi.validate(options, schema, { allowUnknown: true })
     if (result.error) {
