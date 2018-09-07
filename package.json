@@ -49,7 +49,7 @@
     "sanity:environment": "npm run doc:lint && npm run lint && npm run depcheck",
     "sanity": "npm run sanity:environment && npm run test",
     "start": "cd packages/notificami-server && npm run start",
-    "test": "lerna run test"
+    "test": "lerna run test --concurrency 1 --stream"
   },
   "contributors": [
     "Filippo De Santis (https://github.com/p16)",
