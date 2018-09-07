@@ -16,7 +16,7 @@ class Consumer {
     this.start(this.queue, (err, message, done) => {
       this.handler(err, message, done).catch(err => {
         this.stopped = true
-        console.error(err)
+        global.console.warn('SQS Consumer - consume handler error:\n', err)
       })
 
       if (!this.stopped) this.consume()
