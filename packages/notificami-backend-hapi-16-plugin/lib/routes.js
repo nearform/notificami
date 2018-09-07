@@ -1,16 +1,15 @@
 'use strict'
 
 const Joi = require('joi')
+const { version } = require('../package.json')
 
-module.exports = {
-  name: 'notifications',
-  register(server, options = {}) {
-    const { cors = false, auth = false } = options
-
+const register = (server, options = {}, next) => {
+  const { cors = false, auth = false } = options
+  try {
     server.route({
       method: 'GET',
       path: '/users/{username}/notifications/{offsetId?}',
-      handler: async function(request, h) {
+      handler: async function(request, reply, h) {
         const { username, offsetId } = request.params
         const results = await request.notificationsService.getByUserIdentifier(username, offsetId)
         if (results.hasMore === undefined) {
@@ -22,9 +21,9 @@ module.exports = {
             )
           }
         }
-        return { items: results.items, hasMore: results.hasMore }
+        return reply({ items: results.items, hasMore: results.hasMore })
       },
-      options: {
+      config: {
         cors,
         auth,
         validate: {
@@ -39,10 +38,10 @@ module.exports = {
     server.route({
       method: 'POST',
       path: '/notifications',
-      handler: async function(request, h) {
-        return request.notificationsService.add(request.payload)
+      handler: async function(request, reply, h) {
+        return reply(request.notificationsService.add(request.payload))
       },
-      options: {
+      config: {
         cors,
         auth,
         validate: {
@@ -58,12 +57,12 @@ module.exports = {
     server.route({
       method: 'PUT',
       path: '/notifications/{id}/read',
-      handler: async function(request, h) {
+      handler: async function(request, reply, h) {
         const { id } = request.params
 
-        return request.notificationsService.setRead({ id })
+        return reply(request.notificationsService.setRead({ id }))
       },
-      options: {
+      config: {
         cors,
         auth,
         validate: {
@@ -77,12 +76,12 @@ module.exports = {
     server.route({
       method: 'PUT',
       path: '/notifications/{id}/unread',
-      handler: async function(request, h) {
+      handler: async function(request, reply, h) {
         const { id } = request.params
 
-        return request.notificationsService.setUnread({ id })
+        return reply(request.notificationsService.setUnread({ id }))
       },
-      options: {
+      config: {
         cors,
         auth,
         validate: {
@@ -96,13 +95,13 @@ module.exports = {
     server.route({
       method: 'DELETE',
       path: '/notifications/{id}',
-      handler: async function(request, h) {
+      handler: async function(request, reply, h) {
         const { id } = request.params
 
         await request.notificationsService.delete({ id })
-        return { success: true }
+        return reply({ success: true })
       },
-      options: {
+      config: {
         cors,
         auth,
         validate: {
@@ -112,5 +111,12 @@ module.exports = {
         }
       }
     })
+    return next()
+  } catch (err) {
+    return next(err)
   }
 }
+
+register.attributes = { name: 'notifications', version }
+
+module.exports = register

@@ -2,20 +2,21 @@
 
 const Nes = require('nes')
 const { notifyUser } = require('./subscriptions')
+const { name, version } = require('../package.json')
+const { callbackify } = require('util')
 
-exports.plugin = {
-  pkg: require('../package.json'),
-  register: async function(server, options) {
+module.exports = {
+  register: async function(server, options, next) {
     await server.register([
       {
-        plugin: Nes,
+        register: Nes,
         options
       }
     ])
 
-    server.method('notificationsChannelWebsocketNesNotifyUser', notifyUser.bind(server))
+    server.method('notificationsChannelWebsocketNesNotifyUser', notifyUser.bind(server.root))
     server.subscription('/users/{user*}', {
-      onSubscribe: async (socket, path, params) => {
+      onSubscribe: callbackify(async (socket, path, params) => {
         setTimeout(async () => {
           const { user } = params
           const results = await server.notificationsService.getByUserIdentifier(user)
@@ -28,15 +29,19 @@ exports.plugin = {
               )
             }
           }
-          await server.publish(`/users/${params.user}`, {
+          return server.publish(`/users/${params.user}`, {
             type: 'init',
             payload: { items: results.items, hasMore: results.hasMore }
           })
         })
-      }
+      })
     })
+
     server.notificationsService.register('socket', 'websocket-nes', async notification => {
       return server.methods.notificationsChannelWebsocketNesNotifyUser(notification)
     })
+
+    return next()
   }
 }
+module.exports.register.attributes = { name, version }

@@ -1,11 +1,11 @@
-# @nearform/notificami-channel-websocket-nes
+# @nearform/notificami-channel-websocket-nes-6-hapi-16
 
 This plugin will add a websocket channel to the notification platform.
 
 ## Install
 
 ```
-npm install @nearform/notificami-channel-websocket-nes
+npm install @nearform/notificami-channel-websocket-nes-6-hapi-16
 ```
 
 ## Configuration
@@ -14,7 +14,7 @@ To use the 'notificami-channel-websocket-nes' as a channel add it in the `channe
 ```
 channels: {
   socket: {
-    plugin: '@nearform/notificami-channel-websocket-nes'
+    plugin: '@nearform/notificami-channel-websocket-nes-6-hapi-16'
   }
 }
 ```

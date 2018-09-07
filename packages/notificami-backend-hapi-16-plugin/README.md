@@ -1,18 +1,18 @@
-# @nearform/notificami-backend-hapi-plugin
+# @nearform/notificami-backend-hapi-16-plugin
 
-`@nearform/notificami-backend-hapi-plugin` is a plugin to add the notificami REST API and Websockets to a [Hapi (17+)][hapi] server. It relies on the [`@nearform/notificami-backend-core` module](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-core).
+`@nearform/notificami-backend-hapi-16-plugin` is a plugin to add the notificami REST API and Websockets to a [Hapi (16)][hapi] server. It relies on the [`@nearform/notificami-backend-core` module](https://github.com/nearform/notificami/tree/master/packages/notificami-backend-core).
 
 ## Install
 
 To install via npm:
 
 ```
-npm install @nearform/notificami-backend-hapi-plugin
+npm install @nearform/notificami-backend-hapi-16-plugin
 ```
 
 ## Configuration
 
-When initializing the `@nearform/notificami-backend-hapi-plugin`, it will accept a options object of the followig format
+When initializing the `@nearform/notificami-backend-hapi-16-plugin`, it will accept a options object of the followig format
 
 ```
 {
@@ -36,7 +36,7 @@ When initializing the `@nearform/notificami-backend-hapi-plugin`, it will accept
       sendgrid: async (notification) => {}
     },
     socket: {
-      plugin: '@nearform/notificami-channel-websocket-nes'
+      plugin: '@nearform/notificami-channel-websocket-nes-6-hapi-16'
     }
   },
   strategies: {
@@ -56,7 +56,7 @@ The `channels` option should be an object declaring which are the channels to be
 
 To have a list of already implemented provider you can refer to [the providers list from `notif.me sdk`](https://github.com/notifme/notifme-sdk#2-providers)
 
-The `strategies` option may define different strategies to use when delivering notifications. Each strategy should contain a list of channels. If the strategy in the [notification request](#@nearform/notificami-backend-hapi-plugin) matches one of the strategies we definend, its channels will be used to send the notification. We will loop on the channels and stop at the first one that its successful in sending the notification.
+The `strategies` option may define different strategies to use when delivering notifications. Each strategy should contain a list of channels. If the strategy in the [notification request](#@nearform/notificami-backend-hapi-16-plugin) matches one of the strategies we definend, its channels will be used to send the notification. We will loop on the channels and stop at the first one that its successful in sending the notification.
 
 
 ## <a name="api"></a> HTTP APIs

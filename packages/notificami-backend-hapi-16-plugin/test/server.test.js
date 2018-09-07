@@ -22,7 +22,7 @@ describe('Notifications REST API', () => {
   })
 
   after(async () => {
-    return server.stop()
+    server.stop()
   })
 
   describe('GET /users/{userIdentifier}/notifications', () => {

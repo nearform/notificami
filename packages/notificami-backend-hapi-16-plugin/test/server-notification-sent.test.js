@@ -10,7 +10,7 @@ const { resetDb, loadDataFromTable } = require('@nearform/notificami-backend-cor
 const buildServer = require('./test-server')
 
 describe('Notifications REST API', () => {
-  let server = null
+  let server
 
   before(async () => {
     server = await buildServer({
@@ -38,14 +38,15 @@ describe('Notifications REST API', () => {
         }
       }
     })
+    await server.start()
   })
 
   beforeEach(async () => {
     await resetDb()
   })
 
-  after(async () => {
-    return server.stop()
+  after(() => {
+    server.stop()
   })
 
   describe('POST /notifications', () => {

@@ -19,6 +19,7 @@ const notificationsHapiPlugin = {
     }
 
     if (options.storage && options.storage.plugin) {
+      server.log(name, ['use storage plugin', options.storage])
       try {
         await server.register({ plugin: require(options.storage.plugin), options: options.storage.options || {} })
       } catch (e) {
@@ -40,6 +41,7 @@ const notificationsHapiPlugin = {
     server.decorate('request', 'notificationsService', notificationsService)
 
     if (options.channels) {
+      server.log(name, ['use channels', options.channels])
       const channels = Object.keys(options.channels)
       for (let index = 0; index < channels.length; index++) {
         const value = options.channels[channels[index]]
@@ -48,7 +50,7 @@ const notificationsHapiPlugin = {
           try {
             await server.register({ plugin: require(value.plugin), options: value.options || {} })
           } catch (e) {
-            server.log(['error', 'initialize-channel', value.plugin], e)
+            server.log(['error', name, 'initialize-channel', value.plugin], e)
           }
         } else {
           const channel = channels[index]
@@ -61,12 +63,13 @@ const notificationsHapiPlugin = {
     }
 
     if (options.plugins) {
+      server.log(name, ['use plugins', options.plugins])
       for (let index = 0; index < options.plugins.length; index++) {
         const value = options.plugins[index]
         try {
           await server.register({ plugin: require(value.plugin), options: value.options || {} })
         } catch (e) {
-          server.log(['error', 'initialize-plugin', value.plugin], e)
+          server.log(['error', name, 'initialize-plugin', value.plugin], e)
         }
       }
     }

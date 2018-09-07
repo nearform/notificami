@@ -1,5 +1,7 @@
 'use strict'
 
+const { promisify } = require('util')
+
 async function notifyUser(notification) {
   const server = this
 
@@ -27,7 +29,10 @@ async function notifyUser(notification) {
   }
 
   // TODO Find a way to check if the message is delivered, an ACK message from the client can be a solution
-  await server.publish(`/users/${notification.userIdentifier}`, { type: 'new', payload: notifyToSend })
+  await promisify(server.publish.bind(server.root))(`/users/${notification.userIdentifier}`, {
+    type: 'new',
+    payload: notifyToSend
+  })
 }
 
 module.exports = {

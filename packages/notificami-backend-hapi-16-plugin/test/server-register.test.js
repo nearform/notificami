@@ -1,11 +1,11 @@
 'use strict'
-
+const hapi = require('hapi')
 const { expect, fail } = require('code')
 const Lab = require('lab')
 const sinon = require('sinon')
 
 module.exports.lab = Lab.script()
-const { describe, it: test, beforeEach, afterEach } = module.exports.lab
+const { describe, it: test, beforeEach } = module.exports.lab
 
 const logMessage = process.send ? process.send : console.log // eslint-disable-line no-console
 describe('Notifications REST API Registration', () => {
@@ -15,25 +15,22 @@ describe('Notifications REST API Registration', () => {
   beforeEach(async () => {
     try {
       loggerStub = sinon.spy()
-      server = require('hapi').Server({
+      server = new hapi.Server()
+      server.connection({
         host: '127.0.0.1',
         port: 8080
       })
-      server.events.on('log', loggerStub)
+      server.on('log', loggerStub)
     } catch (err) {
       logMessage(`Failed to build server: ${err.message}`)
       process.exit(1)
     }
   })
 
-  afterEach(async () => {
-    return server.stop()
-  })
-
   test('validate the parameters', async () => {
     try {
       await server.register({
-        plugin: require('../lib/index'),
+        register: require('../lib/index'),
         options: { pg: 'somevalue' }
       })
       fail('I should have chatched an error...')
@@ -42,15 +39,20 @@ describe('Notifications REST API Registration', () => {
     }
   })
 
-  test('if the storage contains a value should be used', async () => {
+  test('if the storage configuration contains an un-require-able plugin name', async () => {
     await server.register({
-      plugin: require('../lib/index'),
+      register: require('../lib/index'),
       options: {
         storage: {
           plugin: 'someplugin'
         }
       }
     })
-    expect(loggerStub.getCall(0).args[0].tags).to.be.equal(['error', 'initialize-storage', 'someplugin'])
+    return expect(loggerStub.getCall(1).args[0].tags).to.be.equal([
+      'error',
+      '@nearform/notificami-backend-hapi-16-plugin',
+      'initialize-storage',
+      'someplugin'
+    ])
   })
 })

@@ -17,7 +17,7 @@ describe('Notifications REST API Registration', () => {
       loggerStub = sinon.spy()
       server = require('hapi').Server({
         host: '127.0.0.1',
-        port: 8080
+        port: 0
       })
       server.events.on('log', loggerStub)
     } catch (err) {
@@ -51,6 +51,6 @@ describe('Notifications REST API Registration', () => {
         }
       }
     })
-    expect(loggerStub.getCall(0).args[0].tags).to.be.equal(['error', 'initialize-storage', 'someplugin'])
+    expect(loggerStub.getCall(1).args[0].tags).to.be.equal(['error', 'initialize-storage', 'someplugin'])
   })
 })

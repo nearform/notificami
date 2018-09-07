@@ -1,8 +1,8 @@
 {
-  "name": "@nearform/notificami-channel-websocket-nes",
+  "name": "@nearform/notificami-channel-websocket-nes-6-hapi-16",
   "version": "0.0.1",
   "main": "lib/index.js",
-  "description": "notificami-channel-websocket-nes",
+  "description": "notificami-channel-websocket-nes-6-hapi-16",
   "homepage": "https://github.com/nearform/notificami#readme",
   "repository": {
     "type": "git",
@@ -20,6 +20,6 @@
   "author": "nearForm Ltd",
   "license": "Apache-2.0",
   "dependencies": {
-    "nes": "^9.0.0"
+    "nes": "^6.5.2"
   }
 }

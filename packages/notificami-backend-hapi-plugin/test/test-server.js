@@ -10,6 +10,20 @@ module.exports = async function buildServer(config = {}, options = {}) {
       port: config.port || 8080
     })
 
+    server.events.on('response', function(request) {
+      global.console.log(
+        request.info.remoteAddress +
+          ': ' +
+          request.method.toUpperCase() +
+          ' ' +
+          request.url.path +
+          ' --> ' +
+          request.response.statusCode
+      )
+    })
+
+    server.events.on('log', ({ tags, data }) => global.console.log([].concat(tags).join('|'), '>', ...[].concat(data)))
+
     if (!config.pluginOptions) {
       config.pluginOptions = {
         strategies: {

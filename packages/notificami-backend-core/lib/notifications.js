@@ -93,9 +93,7 @@ module.exports = function buildNotificationService(storage, config = {}) {
 
     async add({ notify, sendStrategy, userIdentifier }) {
       let notification = await storage.add({ notify, sendStrategy, userIdentifier })
-
       this.emit('add', notification)
-
       return notification
     }
 
