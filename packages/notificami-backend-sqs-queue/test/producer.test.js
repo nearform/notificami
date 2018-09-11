@@ -8,7 +8,9 @@ const Lab = require('lab')
 module.exports.lab = Lab.script()
 const { describe, it: test, after } = module.exports.lab
 
+/* eslint max-len: ["error", { "ignoreComments": true }] */
 /*
+
 Send request response:
 {
   ResponseMetadata: {

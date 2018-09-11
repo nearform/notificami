@@ -21,7 +21,7 @@ AWS_MOCK.mock('SQS', 'receiveMessage', async () => ({
     {
       MessageId: '73c94793-0b30-426b-87cc-1319605b1d5f',
       ReceiptHandle:
-        'AQEB7zu3d1iWHrbR/7kMN1yU48XWcJtT0lrSBYrOB2BSY/37dLm9uNY5HvgK3dFCxNJbdSL+ZoNZZsIHeT6Bnq5yFabCJFyGMSJSSHmIE3SB9apEiZ47tBaHS35iZXk+X38m8TEXRKrAjVe2rgAPyJbUZUlSpTiPRtHjR6vQa8Sx97OSFJ+smS5YTdHq41fovlohakFjtlO5nJ6a39bLgPYujCup1G+jZuS8xzs0vUBC5joPzzRyqLjbeN1vvN81iR4OnsM0b8Mi3r/s2ZERXKd1m63dF8ph67h9nT+JQGazJ10=',
+        'AQEB7zu3d1iWHrbR/7kMN1yU48XWcJtT0lrSBYrOB2BSY/37dLm9uNY5HvgK3dFCxNJbdSL+ZoNZZsIHeT6Bnq5yFabCJFyGMSJSSHmIE3SB9apEiZ47tBaHS35iZXk+X38m8TEXRKrAjVe2rgAPyJbUZUlSpTiPRtHjR6vQa8Sx97OSFJ+smS5YTdHq41fovlohakFjtlO5nJ6a39bLgPYujCup1G+jZuS8xzs0vUBC5joPzzRyqLjbeN1vvN81iR4OnsM0b8Mi3r/s2ZERXKd1m63dF8ph67h9nT+JQGazJ10=', // eslint-disable-line
       MD5OfBody: 'f32100ce44f559f2854aaf59a4c5f887',
       Body: '...',
       Attributes: { SentTimestamp: '1531208774623' }

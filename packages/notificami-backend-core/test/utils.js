@@ -20,7 +20,7 @@ async function resetDb() {
 
     await checkDatabaseExists(pool, config.pg.database)
     await resetTables(pool)
-    await pool.end()
+    // await pool.end()
     await runMigrations(config.pg)
   } catch (e) {
     console.error(e) // eslint-disable-line no-console
@@ -32,7 +32,7 @@ async function loadDataFromTable(table) {
   const pool = buildPool(config.pg)
 
   const result = await pool.query(`SELECT * FROM ${table}`)
-  await pool.end()
+  // await pool.end()
 
   return result.rows
 }

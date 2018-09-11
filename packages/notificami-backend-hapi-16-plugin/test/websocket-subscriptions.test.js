@@ -4,8 +4,10 @@ const Nes = require('nes')
 const { expect } = require('code')
 const sinon = require('sinon')
 const Lab = require('lab')
+const { promisify } = require('util')
+
 module.exports.lab = Lab.script()
-const { describe, it: test, before, after, beforeEach } = module.exports.lab
+const { describe, it, before, after, beforeEach } = module.exports.lab
 
 const { resetDb } = require('@nearform/notificami-backend-core/test/utils')
 const buildServer = require('./test-server')
@@ -27,7 +29,7 @@ describe('Notification Websocket - routes', () => {
         pluginOptions: {
           channels: {
             socket: {
-              plugin: '@nearform/notificami-channel-websocket-nes',
+              plugin: '@nearform/notificami-channel-websocket-nes-6-hapi-16',
               options: { heartbeat: false }
             }
           },
@@ -42,10 +44,9 @@ describe('Notification Websocket - routes', () => {
       },
       { mockTestService }
     )
-
-    await server.start()
     port = server.info.port
     global.console.log('WS test port :', port)
+    await server.start()
   })
 
   beforeEach(async () => {
@@ -53,28 +54,27 @@ describe('Notification Websocket - routes', () => {
     await resetDb()
   })
 
-  after(async () => {
-    return server.stop()
+  after(() => {
+    server.stop()
   })
 
-  describe('Websocket', () => {
-    test('it should be pushed to resource subscribers if the user is connected', async flags => {
+  describe('Websocket', done => {
+    it('should be pushed to resource subscribers if the user is connected', async flags => {
       return new Promise(async (resolve, reject) => {
         client = new Nes.Client(`ws://127.0.0.1:${port}`)
-        await client.connect()
+        await promisify(client.connect.bind(client))({})
 
-        await delay(1000)
         await server.notificationsService.add({
           notify: { user: 'davide', content: 'Some initial notification' },
           sendStrategy: 'default',
           userIdentifier: 'davide'
         })
-
+        await delay(1000)
         global.console.warn('⚠️ This test should display an error "Error: User not subscribed"')
 
         let hasInit = false
         let hasNew = false
-        async function handler({ payload, type }, flags) {
+        promisify(client.subscribe.bind(client))(`/users/davide`, async ({ payload, type }, flags) => {
           if (type === 'init') {
             hasInit = true
             expect(payload.hasMore).to.be.false()
@@ -87,11 +87,10 @@ describe('Notification Websocket - routes', () => {
             expect(payload.notify).to.equal({ user: 'davide', content: 'Some notification content' })
           }
           if (hasNew && hasInit) {
-            client.disconnect().then(resolve)
+            await promisify(client.disconnect.bind(client))()
+            resolve()
           }
-        }
-
-        await client.subscribe(`/users/davide`, handler)
+        })
 
         const addedNotification = await server.notificationsService.add({
           notify: { user: 'davide', content: 'Some notification content' },
@@ -100,13 +99,13 @@ describe('Notification Websocket - routes', () => {
         })
 
         await delay(1000)
-        return server.notificationsService.send(addedNotification)
+        await server.notificationsService.send(addedNotification)
       })
     })
 
-    test('it should use another channel if the user is not connected', async flags => {
+    it('should use another channel if the user is not connected', async flags => {
       client = new Nes.Client(`ws://127.0.0.1:${port}`)
-      await client.connect()
+      await promisify(client.connect.bind(client))({})
 
       mockTestService.returns(Promise.resolve())
 
